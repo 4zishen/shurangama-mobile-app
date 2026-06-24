@@ -251,6 +251,11 @@ const MobileApp = (() => {
         // Header
         const avatar = document.getElementById('headerAvatar');
         if (avatar) avatar.src = state.userAvatar;
+        
+        // 追逐遊戲中的玩家頭像同步
+        const gamePlayer = document.getElementById('chasePlayer');
+        if (gamePlayer) gamePlayer.src = state.userAvatar;
+        
         setText('meritCount', state.merit);
         setText('levelText', 'Lv.' + state.level);
 
