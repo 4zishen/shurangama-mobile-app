@@ -1,0 +1,1953 @@
+<!DOCTYPE html>
+<html lang="zh-Hant"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>楞嚴咒 - 聆聽與隨身錄音</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>%E8%A1%8C</text></svg>">
+    <style>
+        :root {
+            --primary-color: #4a76a8;
+            --secondary-color: #50e3c2;
+            --accent-color: #f5a623;
+            --bad-color: #d0021b;
+            --light-bg: #f8f9fa;
+            --text-dark: #212529;
+            --text-light: #6c757d;
+            --border-color: #dee2e6;
+            --white-bg: #ffffff;
+            --excellent-color: #16a34a;
+            --radius: 16px;
+            --shadow: 0 5px 20px rgba(0,0,0,0.2);
+            --transition: all 0.3s ease;
+            --font-size-base: 16px;
+            --padding-base: 1rem;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background-color: var(--light-bg);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: var(--padding-base);
+            color: var(--text-dark);
+            transform: scale(0.81);
+        }
+
+        .main-container {
+            width: 100%;
+            max-width: 2376px;
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .learning-section {
+            background: var(--white-bg);
+            border-radius: var(--radius);
+            padding: 2rem;
+            box-shadow: var(--shadow);
+            width: 100%;
+        }
+
+        .app-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .app-header h1 {
+            font-size: 2.2rem;
+            color: var(--primary-color);
+        }
+
+        .section-selector {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 20px;
+        }
+
+        .btn {
+            border-radius: var(--radius);
+            transition: var(--transition);
+            cursor: pointer;
+            font-size: var(--font-size-base);
+            padding: 10px 20px;
+            border: 1px solid transparent;
+            background: #eef1f5;
+        }
+
+        .section-btn:hover {
+            background: #e0e6ef;
+        }
+
+        .section-btn.active {
+            background: var(--primary-color);
+            color: var(--white-bg);
+            border-color: var(--primary-color);
+        }
+
+        .mode-selector {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .mantra-display-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 15px;
+            padding: 20px 0;
+        }
+
+        .mantra-sentence-grid {
+            padding: 15px;
+            background: var(--light-bg);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: var(--transition);
+            border: 1px solid var(--border-color);
+            text-align: center;
+            white-space: nowrap;
+            overflow-x: auto;
+        }
+
+        .mantra-sentence-grid:hover {
+            background-color: #eaf2ff;
+        }
+
+        .mantra-sentence-grid.selected {
+            background-color: #d1e3ff;
+            border-color: var(--primary-color);
+        }
+
+        .table-layout-container {
+            width: 80%;
+            margin: 20px auto;
+            position: relative;
+        }
+
+        .brace-wrapper {
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 25px;
+            pointer-events: none;
+        }
+
+        .brace {
+            position: absolute;
+            border: 2px solid var(--primary-color);
+            border-right: none;
+            border-radius: 8px 0 0 8px;
+        }
+        
+        .table-rows-wrapper { padding-left: 30px; overflow-x: auto; }
+
+        .mantra-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .mantra-table tr {
+            cursor: pointer;
+            transition: var(--transition);
+            border-bottom: 1px solid #eee;
+        }
+
+        .mantra-table tr:last-child { border-bottom: none; }
+        .mantra-table tr:hover { background-color: #f7faff; }
+        .mantra-table tr.selected { background-color: #d1e3ff; }
+
+        .mantra-table td {
+            font-size: 20px;
+            line-height: 1.0;
+            white-space: nowrap;
+            padding: 0px 15px;
+            text-align: left;
+            position: relative;
+            vertical-align: top;
+        }
+        
+        .mantra-table td.line-number {
+            width: 40px;
+            text-align: center;
+            font-weight: bold;
+            color: var(--text-light);
+            flex-shrink: 0;
+            padding: 10px 5px;
+        }
+
+        .pagination-controls {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 1rem;
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--border-color);
+        }
+        .pagination-btn {
+            background: #eef1f5;
+            border: 1px solid transparent;
+        }
+        .pagination-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            background: #f8f9fa;
+        }
+        .page-indicator {
+            font-weight: 500;
+            color: var(--text-light);
+            padding: 0 1rem;
+        }
+
+        .c-red { color: var(--bad-color); }
+        .c-green { color: var(--excellent-color); }
+        .c-blue { color: var(--primary-color); }
+
+        .mantra-table td span {
+            font-size: 1em;
+        }
+
+        .floating-recorder {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(8px);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+            overflow: hidden;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: move;
+            user-select: none;
+            width: 220px;
+            min-width: 220px;
+        }
+
+        .floating-recorder.dragging {
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            transform: scale(1.02);
+        }
+
+        .floating-recorder.collapsed {
+            width: 56px;
+            height: 56px;
+            min-width: 56px;
+            padding: 0;
+            border-radius: 50%;
+            justify-content: center;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.85); /* 改成半透明白色 */
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2); /* 調整陰影 */
+            border: 1px solid rgba(0, 0, 0, 0.05); /* 改成淡灰色邊框 */
+        }
+
+        .floating-recorder.collapsed .recorder-header {
+            padding: 0;
+            margin: 0;
+            background: transparent;
+            justify-content: center;
+        }
+
+        .floating-recorder.collapsed .recorder-title {
+            display: none;
+        }
+
+        .floating-recorder.collapsed .recorder-content {
+            max-height: 0;
+            opacity: 0;
+            padding: 0;
+            margin: 0;
+            overflow: hidden;
+            visibility: hidden;
+        }
+
+        .recorder-content {
+            max-height: 200px; /* 根據內容調整此高度 */
+            opacity: 1;
+            visibility: visible;
+            overflow: hidden;
+            transition: max-height 0.35s ease-in-out, opacity 0.3s ease-in-out, visibility 0.35s;
+        }
+
+        .recorder-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            padding: 4px 0;
+        }
+
+        .recorder-title {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--primary-color);
+            margin: 0;
+        }
+
+        .recorder-toggle {
+            background: none;
+            border: none;
+            width: 24px;
+            height: 24px;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: var(--transition);
+            color: var(--text-light);
+        }
+
+        .recorder-toggle:hover {
+            background-color: #f0f0f0;
+            color: var(--primary-color);
+        }
+
+        .floating-recorder.collapsed .recorder-toggle {
+            width: 100%;
+            height: 100%;
+            color: #333; /* 圖示改成深色 */
+        }
+        .floating-recorder.collapsed .recorder-toggle:hover {
+            background-color: rgba(0, 0, 0, 0.08); /* 滑鼠懸停時的背景色 */
+        }
+
+        .recorder-toggle .icon-expand,
+        .floating-recorder.collapsed .recorder-toggle .icon-collapse {
+            display: none;
+        }
+
+        .floating-recorder.collapsed .recorder-toggle .icon-expand,
+        .recorder-toggle .icon-collapse {
+            display: block;
+        }
+
+        .recorder-header {
+            cursor: grab;
+        }
+
+        .recorder-header:active {
+            cursor: grabbing;
+        }
+
+        .floating-recorder.dragging .recorder-header {
+            cursor: grabbing;
+        }
+
+        /* 響應式設計 */
+        @media (max-width: 768px) {
+            .floating-recorder {
+                min-width: 180px;
+                padding: 10px;
+            }
+            
+            .recorder-title {
+                font-size: 0.8rem;
+            }
+            
+            .overlay-text-btn {
+                font-size: 0.8rem;
+                padding: 6px 12px;
+            }
+            
+            .volume-control {
+                font-size: 0.8rem;
+            }
+            
+            .volume-control input[type="range"] {
+                width: 80px;
+            }
+        }
+
+        /* 動畫效果 */
+        @keyframes recorderAppear {
+            from {
+                opacity: 0;
+                transform: translateY(-20px) scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .floating-recorder {
+            animation: recorderAppear 0.3s ease-out;
+        }
+
+        /* 收合狀態的特殊樣式 */
+        .recorder-toggle svg {
+            transition: transform 0.3s ease;
+        }
+
+
+        .recorder-controls {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            justify-content: center;
+        }
+
+        .recorder-btn {
+            background: none;
+            border: none;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+            cursor: pointer;
+        }
+
+        .recorder-btn:hover:not(:disabled) { background-color: #f0f0f0; }
+        #recordBtn.recording svg { fill: var(--bad-color); }
+        #recordBtn.recording { animation: recordingPulse 1.2s infinite; }
+
+        @keyframes recordingPulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        .recorder-btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        /* 狀態指示器 */
+        .recorder-status {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: var(--excellent-color);
+            border: 2px solid var(--white-bg);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .floating-recorder.has-recording .recorder-status {
+            opacity: 1;
+        }
+
+        .overlay-text-btn {
+            background: #e9ecef;
+            border: 1px solid var(--border-color);
+            border-radius: 25px;
+            padding: 8px 16px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            white-space: nowrap;
+            cursor: pointer;
+        }
+
+        .overlay-text-btn:hover:not(:disabled) {
+            background-color: #d1e3ff;
+            border-color: var(--primary-color);
+        }
+
+        .overlay-text-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            background-color: #f8f9fa;
+        }
+
+        .volume-controls {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            justify-content: center;
+            margin-top: 12px;
+            width: 100%;
+            transition: opacity 0.3s, max-height 0.3s ease;
+            opacity: 0;
+            max-height: 0;
+            overflow: hidden;
+        }
+
+        .volume-controls.visible {
+            opacity: 1;
+            max-height: 50px;
+        }
+
+        .floating-recorder.collapsed .volume-controls {
+            display: none;
+        }
+
+        .floating-recorder.collapsed .recorder-controls {
+            margin-bottom: 0;
+        }
+
+        .volume-control {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9rem;
+            color: var(--text-light);
+        }
+
+        .volume-control input[type="range"] {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 100px;
+            height: 6px;
+            background: #e9ecef;
+            border-radius: 3px;
+            outline: none;
+            background-image: linear-gradient(var(--primary-color), var(--primary-color));
+            background-repeat: no-repeat;
+        }
+
+        .volume-control input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 18px;
+            height: 18px;
+            background: var(--primary-color);
+            cursor: pointer;
+            border-radius: 50%;
+            border: 2px solid var(--white-bg);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+        }
+
+        .volume-control input[type="range"]::-moz-range-thumb {
+            width: 18px;
+            height: 18px;
+            background: var(--primary-color);
+            cursor: pointer;
+            border-radius: 50%;
+            border: 2px solid var(--white-bg);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+        }
+
+        /* 拖動時的視覺回饋 */
+        .floating-recorder.dragging {
+            opacity: 0.9;
+        }
+
+        /* 防止拖動時選取文字 */
+        .floating-recorder.dragging * {
+            pointer-events: none;
+            user-select: none;
+        }
+
+        .puzzle-container {
+            display: grid;
+            gap: 1rem;
+            padding: var(--padding-base);
+            background: var(--white-bg);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+        }
+
+        .puzzle-pieces {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            justify-content: center;
+            padding: 1rem;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+
+        .puzzle-piece {
+            padding: 0.5rem 1rem;
+            background: var(--white-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            cursor: move;
+            user-select: none;
+            text-align: center;
+        }
+
+        .puzzle-target {
+            min-height: 100px;
+            border: 2px dashed var(--border-color);
+            border-radius: 10px;
+            padding: 1rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            align-items: center;
+        }
+
+        .quiz-container {
+            padding: var(--padding-base);
+            background: var(--white-bg);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            text-align: center;
+        }
+        
+        .quiz-question {
+            font-size: 1.2rem;
+            margin-bottom: 1.5rem;
+            line-height: 1.8;
+            color: var(--text-dark);
+        }
+
+        .quiz-options {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 1.5rem;
+        }
+
+        .hidden { display: none; }
+
+        .mantra-char-group {
+            display: inline-flex;
+            flex-direction: column;
+            align-items: center;
+            line-height: 1.4;
+            padding: 0 2px;
+            vertical-align: bottom;
+        }
+        .pinyin {
+            font-size: 0.3em;
+            color: var(--text-light);
+            letter-spacing: 0.5px;
+            white-space: nowrap;
+        }
+        .chinese-char {
+            font-size: 1.2em;
+        }
+        .pinyin-hidden .pinyin {
+            display: none;
+        }
+        .pinyin-toggle-btn {
+            background: linear-gradient(45deg, #1dd1a1, #10ac84);
+            color: var(--white-bg);
+            border: none;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+        }
+        .pinyin-toggle-btn:hover {
+            background: linear-gradient(45deg, #20e0b1, #12c090);
+            transform: translateY(-1px);
+            box-shadow: 0 6px 15px rgba(0,0,0,0.2);
+        }
+
+        #karaoke-text span.highlight {
+            color: var(--accent-color);
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <main class="main-container">
+        <section class="learning-section">
+            <header class="app-header">
+                <h1>楞嚴咒學習</h1>
+            </header>
+            <nav id="sectionSelector" role="navigation" aria-label="會別選擇"><button class="btn section-btn " data-id="verses">偈頌</button><button class="btn section-btn active" data-id="assembly1">第一會</button><button class="btn section-btn " data-id="assembly2">第二會</button><button class="btn section-btn " data-id="assembly3">第三會</button><button class="btn section-btn " data-id="assembly4">第四會</button><button class="btn section-btn " data-id="assembly5">第五會</button></nav>
+            <div id="modeSelector" class="mode-selector" role="navigation" aria-label="學習模式選擇">
+                <button class="btn section-btn active" data-mode="default">預設模式</button>
+                <button class="btn section-btn" data-mode="puzzle">拼圖模式</button>
+                <button class="btn section-btn" data-mode="quiz">問答模式</button>
+                <button class="btn section-btn" data-mode="follow">跟讀模式</button>
+            </div>
+            <div style="text-align: center; margin-bottom: 20px;">
+                <button id="togglePinyinBtn" class="btn pinyin-toggle-btn">隱藏拼音</button>
+            </div>
+            <div id="mantraDisplay" role="region" aria-live="polite" class="table-layout-container"></div>
+            <div id="paginationControls" class="pagination-controls">
+                    <button class="btn pagination-btn" data-action="prev" disabled="">上一頁</button>
+                    <span class="page-indicator">第 1 / 6 頁</span>
+                    <button class="btn pagination-btn" data-action="next">下一頁</button>
+                </div>
+
+<!-- ===== ↓↓↓ 請將這個新區塊加到這裡 ↓↓↓ ===== --> <div style="text-align: center; margin-top: 40px; padding: 20px; border-top: 1px solid var(--border-color);"> <h3 style="margin-bottom: 15px; color: var(--primary-color);">協助我們做得更好</h3> <p style="margin-bottom: 20px; color: var(--text-light);">我們誠摯邀請您填寫使用回饋問卷，您的寶貴意見是我們進步的最大動力！</p> <a href="https://forms.gle/8K1sTKhNyVbuND3z6" target="_blank" class="btn pinyin-toggle-btn" style="padding: 12px 25px; font-size: 1.1em;"> 前往填寫回饋問卷 </a> </div> <!-- ===== ↑↑↑ 新區塊到此結束 ↑↑↑ ===== -->
+
+        </section>
+    </main>
+
+    <div class="floating-recorder" id="floatingRecorder">
+        <div class="recorder-status" id="recorderStatus"></div>
+        <div class="recorder-header" id="recorderHeader">
+            <h4 class="recorder-title">錄音工具</h4>
+            <button class="recorder-toggle" id="recorderToggle" title="收合" aria-expanded="true">
+                <svg class="icon-expand" viewBox="0 0 100 100" width="28" height="28" fill="currentColor">
+                    <circle cx="50" cy="50" r="32" fill="none" stroke="currentColor" stroke-width="8"></circle>
+                    <circle cx="50" cy="50" r="12" fill="currentColor"></circle>
+                </svg>
+                <svg class="icon-collapse" viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+                    <path d="M7 10l5 5 5-5z"></path>
+                </svg>
+            </button>
+        </div>
+        <div class="recorder-content" id="recorderContent">
+            <div class="recorder-controls">
+                <button class="recorder-btn" id="recordBtn" title="開始/停止錄音">
+                    <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor"><path d="M12 14a3 3 0 0 0 3-3V5a3 3 0 0 0-6 0v6a3 3 0 0 0 3 3zm5.4-3a5.4 5.4 0 0 1-10.8 0H5a7 7 0 0 0 6 6.93V21h2v-3.07A7 7 0 0 0 19 11h-1.6z"></path></svg>
+                </button>
+                <button class="recorder-btn" id="playMyRecBtn" title="播放我的錄音" disabled="">
+                    <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor"><path d="M8 5v14l11-7z"></path></svg>
+                </button>
+                <button class="overlay-text-btn" id="playOverlayBtn" title="與範本重疊播放" disabled="">與範本重疊</button>
+            </div>
+            <div class="volume-controls" id="volumeControls">
+                <div class="volume-control"><span>範本</span><input type="range" id="templateVolume" min="0" max="1" step="0.1" value="1" style="background-size: 100% 100%;"></div>
+                <div class="volume-control"><span>我的</span><input type="range" id="micVolume" min="0" max="1" step="0.1" value="1" style="background-size: 100% 100%;"></div>
+            </div>
+        </div>
+    </div>
+
+    <audio id="standardAudioPlayer"></audio>
+    <audio id="userAudioPlayer"></audio>
+
+    <script>
+        const fullMantraData = {
+            'verses': [
+                // Page 1
+                [
+                    { lineNumber: 1, columns: ['妙湛總持不動尊', '首楞嚴王世希有', '銷我億刦顛倒想', '不歷僧祇獲法身'], pinyin: 'miào zhàn zǒnɡ chí bú dònɡ zūn, shǒu lénɡ yán wánɡ shì xī yǒu, xiāo wǒ yì jié diān dǎo xiǎnɡ, bú lì sēnɡ qí huò fǎ shēn', audioSrc: 'audio/section0_line01.mp3' },
+                    { lineNumber: 2, columns: ['願今得果成寶王', '還度如是恆沙衆', '將此深心奉塵刹', '是則名爲報佛恩'], pinyin: 'yuàn jīn dé ɡuǒ chénɡ bǎo wánɡ, huán dù rú shì hénɡ shā zhònɡ, jiānɡ cǐ shēn xīn fènɡ chén chà, shì zé mínɡ wéi bào fó ēn', audioSrc: 'audio/section0_line02.mp3' },
+                    { lineNumber: 3, columns: ['伏請世尊爲證明', '五濁惡世誓先入', '如一衆生未成佛', '終不於此取泥洹'], pinyin: 'fú qǐnɡ shì zūn wéi zhènɡ mínɡ, wǔ zhuó è shì shì xiān rù, rú yī zhònɡ shēnɡ wèi chénɡ fó, zhōnɡ bú yú cǐ qǔ ní huán', audioSrc: 'audio/section0_line03.mp3' },
+                    { lineNumber: 4, columns: ['大雄大力大慈悲', '希更審除微細惑', '令我早登無上覺', '於十方界坐道場'], pinyin: 'dà xiónɡ dà lì dà cí bēi, xī ɡènɡ shěn chú wēi xì huò, lìnɡ wǒ zǎo dēnɡ wú shànɡ jué, yú shí fānɡ jiè zuò dào chǎnɡ', audioSrc: 'audio/section0_line04.mp3' },
+                    { lineNumber: 5, columns: ['舜若多性可銷亡', '鑠迦羅心無動轉'], pinyin: 'shùn ruò duō xìnɡ kě xiāo wánɡ, shuò jiā luó xīn wú dònɡ zhuǎn',  audioSrc: 'audio/section0_line06.mp3' },
+                    { lineNumber: 6, columns: ['南無常住十方佛', '南無常住十方法', '南無常住十方僧'], pinyin: 'ná mó cháng zhù shí fāng fó, ná mó cháng zhù shí fāng fǎ, ná mó cháng zhù shí fāng sēng', audioSrc: 'audio/section0_line07.mp3' },
+                    { lineNumber: 7, columns: ['南無釋迦牟尼佛', '南無佛頂首楞嚴'], pinyin: 'ná mó shì jiā móu ní fó, ná mó fó dǐng shǒu lèng yán', audioSrc: 'audio/section0_line08.mp3' },
+                    { lineNumber: 8, columns: ['南無觀世音菩薩', '南無金剛藏菩薩'], pinyin: 'ná mó guān shì yīn pú sà, ná mó jīn ɡānɡ zànɡ pú sà', audioSrc: 'audio/section0_line09.mp3' }
+                ],
+                // Page 2
+                [
+                    { lineNumber: 9, columns: ['爾時世尊', '從肉髻中', '涌百寶光'], pinyin: 'ěr shí shì zūn, cónɡ ròu jì zhōnɡ, yǒnɡ bǎi bǎo ɡuānɡ', audioSrc: 'audio/section0_line10.mp3' },
+                    { lineNumber: 10, columns: ['光中涌出', '千葉寶蓮', '有化如來'], pinyin: 'ɡuānɡ zhōnɡ yǒnɡ chū, qiān yè bǎo lián, yǒu huà rú lái', audioSrc: 'audio/section0_line11.mp3' },
+                    { lineNumber: 11, columns: ['坐寶華中', '頂放十道', '百寶光明'], pinyin: 'zuò bǎo huā zhōnɡ, dǐnɡ fànɡ shí dào, bǎi bǎo ɡuānɡ mínɡ',  audioSrc: 'audio/section0_line12.mp3' },
+                    { lineNumber: 12, columns: ['一一光明', '皆徧示現', '十恆河沙'], pinyin: 'yī yī ɡuānɡ mínɡ, jiē biàn shì xiàn, shí hénɡ hé shā', audioSrc: 'audio/section0_line13.mp3' },
+                    { lineNumber: 13, columns: ['金剛密迹', '擎山持杵', '徧虛空界'], pinyin: 'jīn ɡānɡ mì jì, qínɡ shān chí chǔ, biàn xū kōnɡ jiè', audioSrc: 'audio/section0_line14.mp3' },
+                    { lineNumber: 14, columns: ['大衆仰觀', '畏愛兼抱', '求佛哀祐'], pinyin: 'dà zhònɡ yǎnɡ ɡuān, wèi ài jiān bào, qiú fó āi yòu', audioSrc: 'audio/section0_line15.mp3' },
+                    { lineNumber: 15, columns: ['一心聽佛', '無見頂相', '放光如來'], pinyin: 'yī xīn tīnɡ fó, wú jiàn dǐnɡ xiànɡ, fànɡ ɡuānɡ rú lái', audioSrc: 'audio/section0_line16.mp3' },
+                    { lineNumber: 16, columns: ['宣說神咒'], pinyin: 'xuān shuō shén zhòu', audioSrc: 'audio/section0_line17.mp3' }
+                ]
+            ],
+            'assembly1': [
+                // Page 1
+                [
+                    { lineNumber: 1, columns: ['南無', '薩怛他', '蘇伽多耶', '阿囉訶帝', '三藐三菩寫'], pinyin: 'ná mó, sà dàn tuō, sū qié duō yē, ē là hē dì, sān miǎo sān pú tuó xiě', audioSrc: 'audio/section1_line1.mp3' },
+                    { lineNumber: 2, columns: ['', '薩怛他', '佛陀俱胝瑟尼釤', '', ''], pinyin: 'sà dàn tuō, fó tuó jù zhī sè ní shān', audioSrc: 'audio/section1_line2.mp3' },
+                    { lineNumber: 3, columns: ['南無', '薩婆勃陀勃地', '薩跢鞞弊', '', ''], pinyin: 'ná mó, sà pó bó tuó bó dì, sà duò pí bì', audioSrc: 'audio/section1_line3.mp3' },
+                    { lineNumber: 4, columns: ['南無', '薩多南', '三藐三菩陀', '俱知南', '娑舍囉婆迦僧伽喃'], pinyin: 'ná mó, sà duō nán, sān miǎo sān pú tuó, jù zhī nán, suō shě là pó jiā sēng qié nán', audioSrc: 'audio/section1_line4.mp3' },
+                    { lineNumber: 5, columns: ['南無', '盧雞阿羅漢跢喃', '', '', ''], pinyin: 'ná mó, lú jī ē luó hàn duō nán', audioSrc: 'audio/section1_line5.mp3' },
+                    { lineNumber: 6, columns: ['南無', '蘇嚧多波那喃', '', '', ''], pinyin: 'ná mó, sū lú duō bō nuó nán', audioSrc: 'audio/section1_line6.mp3' },
+                    { lineNumber: 7, columns: ['南無', '娑羯唎陀伽彌喃', '', '', ''], pinyin: 'nā mó, suō jié lì tuó qié mí nán', audioSrc: 'audio/section1_line7.mp3' },
+                    { lineNumber: 8, columns: ['南無', '盧雞三藐伽跢喃', '三藐伽波囉底波多那喃', '', ''], pinyin: 'ná mó, lú jī sān miǎo qié duō nán, sān miǎo qié bō là dǐ bō duō nuó nán', audioSrc: 'audio/section1_line8.mp3' },
+                    { lineNumber: 9, columns: ['南無', '提婆離瑟赧', '', '', ''], pinyin: 'ná mó, tí pó lí sè nǎn', audioSrc: 'audio/section1_line9.mp3' },
+                    { lineNumber: 10, columns: ['南無', '悉陀耶毗地耶', '陀囉離瑟赧', '舍波奴揭囉訶', '娑訶娑囉摩他喃'], pinyin: 'ná mó, xī tuó yē pí dì yē, tuó là lí sè nǎn, shě bō nú jiē là hē, suō hē suō là mó tuō nán', audioSrc: 'audio/section1_line10.mp3' },
+                ],
+                // Page 2
+                [
+                    { lineNumber: 11, columns: ['南無', '跋囉訶摩尼'], pinyin: 'ná mó, bá là hē mó ní', audioSrc: 'audio/section1_line11.mp3' },
+                    { lineNumber: 12, columns: ['南無', '因陀囉耶'], pinyin: 'ná mó, yīn tuó là yē', audioSrc: 'audio/section1_line12.mp3' },
+                    { lineNumber: 13, columns: ['南無婆伽婆帝', '盧陀囉耶', '烏摩般帝', '娑醯夜耶'], pinyin: 'ná mó pó qié pó dì, lú tuó là yē, wū mó bō dì, suō xī yè yē', audioSrc: 'audio/section1_line13.mp3' },
+                    { lineNumber: 14, columns: ['南無婆伽婆帝', '那囉野拏耶', '槃遮摩訶', '三慕陀囉'], pinyin: 'ná mó pó qié pó dì, nuó là yě ná yē, pán zhē mó hē, sān mù tuó là', audioSrc: 'audio/section1_line14.mp3' },
+                    { lineNumber: 15, columns: ['南無', '悉羯唎多耶'], pinyin: 'ná mó, xī jié lì duō yē', audioSrc: 'audio/section1_line15.mp3' },
+                    { lineNumber: 16, columns: ['南無婆伽婆帝', '摩訶迦囉耶', '地唎般剌那伽囉', '毗陀囉波拏迦囉耶'], pinyin: 'ná mó pó qié pó dì, mó hē jiā là yē, dì lì bō lá nà qié là, pí tuó là bō ná jiā là yē', audioSrc: 'audio/section1_line16.mp3' },
+                    { lineNumber: 17, columns: ['阿地目帝', '尸摩舍那泥婆悉泥', '摩怛唎伽拏'], pinyin: 'ē dì mù dì, shī mó shě nuó ní pó xī ní, mó dá lì qié ná', audioSrc: 'audio/section1_line17.mp3' },
+                    { lineNumber: 18, columns: ['南無', '悉羯唎多耶'], pinyin: 'ná mó, xī jié lì duō yē', audioSrc: 'audio/section1_line18.mp3' },
+                    { lineNumber: 19, columns: ['南無婆伽婆帝', '多他伽跢俱囉耶'], pinyin: 'ná mó pó qié pó dì, duō tuō qié duō jù là yē', audioSrc: 'audio/section1_line19.mp3' },
+                    { lineNumber: 20, columns: ['南無', '般頭摩', '俱囉耶'], pinyin: 'ná mó, bō tóu mó, jù là yē', audioSrc: 'audio/section1_line20.mp3' },
+                ],
+                // Page 3
+                [
+                    { lineNumber: 21, columns: ['南無', '跋闍囉', '俱囉耶', '', '', ''], pinyin: 'ná mó, bá shé là, jù là yē', audioSrc: 'audio/section1_line21.mp3' },
+                    { lineNumber: 22, columns: ['南無', '摩尼', '俱囉耶', '', '', ''], pinyin: 'ná mó, mó ní, jù là yē', audioSrc: 'audio/section1_line22.mp3' },
+                    { lineNumber: 23, columns: ['南無', '伽闍', '俱囉耶', '', '', ''], pinyin: 'ná mó, qié shé, jù là yē', audioSrc: 'audio/section1_line23.mp3' },
+                    { lineNumber: 24, columns: ['南無婆伽婆帝帝唎茶輸囉西那', '波囉訶囉拏囉闍耶跢他伽多耶', '', '', '', ''], pinyin: 'ná mó pó qié pó dì dì lì chá shū là xī ná, bō là hē là ná là shé yē duō tuō qié duō yē', audioSrc: 'audio/section1_line24.mp3' },
+                    { lineNumber: 25, columns: ['南無婆伽婆帝', '', '', '', '', ''], pinyin: 'ná mó pó qié pó dì', audioSrc: 'audio/section1_line25.mp3' },
+                    { lineNumber: 26, columns: ['南無阿彌多婆耶跢他伽多耶', '阿囉訶帝三藐三菩陀耶', '', '', '', ''], pinyin: 'ná mó ē mí duō pó yē duō tuō qié duō yē, ē là hē dì sān miǎo sān pú tuó yē', audioSrc: 'audio/section1_line26.mp3' },
+                    { lineNumber: 27, columns: ['南無婆伽婆帝阿芻鞞耶', '跢他伽多耶阿囉訶帝', '三藐三菩陀耶', '', '', ''], pinyin: 'ná mó pó qié pó dì ē chú pí yē, duō tuō qié duō yē ē là hē dì, sān miǎo sān pú tuó yē', audioSrc: 'audio/section1_line27.mp3' },
+                    { lineNumber: 28, columns: ['南無婆伽婆帝鞞沙闍耶', '俱嚧吠柱唎耶般囉婆囉闍耶', '跢他伽多耶', '', '', ''], pinyin: 'ná mó pó qié pó dì pí shā shé yē, jù lú fèi zhù lì yē bō là pó là shé yē, duō tuō qié duō yē', audioSrc: 'audio/section1_line28.mp3' },
+                    { lineNumber: 29, columns: ['南無婆伽婆帝', '三補師瑟跢', '薩捺囉剌闍耶', '跢他伽多耶', '阿囉訶帝', '三藐三菩陀耶'], pinyin: 'ná mó pó qié pó dì, sān bǔ shī bì duō, sà lián nà là là shé yē, duō tuō qié duō yē, ē là hē dì, sān miǎo sān pú tuó yē', audioSrc: 'audio/section1_line29.mp3' }
+                ],
+                // Page 4
+                [
+                    { lineNumber: 30, columns: ['南無婆伽婆帝', '舍雞野母那曳', '跢他伽多耶', '阿囉訶帝', '三藐三菩陀耶'], pinyin: 'ná mó pó qié pó dì, shě jī yě mǔ nuó yè, duō tuō qié duō yē, ē là hē dì, sān miǎo sān pú tuó yē', audioSrc: 'audio/section1_line30.mp3' },
+                    { lineNumber: 31, columns: ['南無婆伽婆帝', '剌怛那雞都囉闍耶', '跢他伽多耶', '阿囉訶帝', '三藐三菩陀耶'], pinyin: 'ná mó pó qié pó dì, là dá nà jī dū là shé yē, duō tuō qié duō yē, ē là hē dì, sān miǎo sān pú tuó yē', audioSrc: 'audio/section1_line31.mp3' },
+                    { lineNumber: 32, columns: ['帝瓢'], pinyin: 'dì piáo', audioSrc: 'audio/section1_line32.mp3' },
+                    { lineNumber: 33, columns: ['南無', '薩羯唎多', '翳曇婆伽婆多', '薩怛他伽都瑟尼釤', '薩怛多般怛㘕'], pinyin: 'ná mó, sà jié lì duō, yì tán pó qié pó duō, sà dàn tā qié dū sè ní shān, sà dàn duō bō dá lán', audioSrc: 'audio/section1_line33.mp3' },
+                    { lineNumber: 34, columns: ['南無', '阿婆囉視耽', '般囉帝揚歧囉', '薩囉婆部多揭囉訶', '尼羯囉訶揭迦囉訶尼'], pinyin: 'ná mó, ē pó là shì dān, bō là dì yánɡ qí là, sà là pó bù duō jiē là hē, ní jié là hē jiē jiā là hē ní', audioSrc: 'audio/section1_line34.mp3' },
+                    { lineNumber: 35, columns: ['跋囉毖地耶叱陀你', '阿迦囉密唎柱', '般唎怛囉耶儜揭唎'], pinyin: 'bá là bì dì yē chì tuó nǐ, ē jiā là mì lì zhù, bō lì dàn là yē níng jiē lì', audioSrc: 'audio/section1_line35.mp3' },
+                    { lineNumber: 36, columns: ['薩囉婆槃陀那目叉尼'], pinyin: 'sà là pó pán tuó nuó mù chā ní', audioSrc: 'audio/section1_line36.mp3' },
+                    { lineNumber: 37, columns: ['薩囉婆突瑟吒', '突悉乏般那你伐囉尼', '赭都囉失帝南'], pinyin: 'sà là pó tù sè zhà, tù xī fá bō nà nǐ fá là ní, zhě dū là shī dì nán', audioSrc: 'audio/section1_line37.mp3' },
+                    { lineNumber: 38, columns: ['羯囉訶娑訶薩囉若闍'], pinyin: 'jié là hē suō hē sà là ruò shé', audioSrc: 'audio/section1_line38.mp3' },
+                    { lineNumber: 39, columns: ['毗多崩薩那羯唎', '阿瑟吒冰舍帝南', '那叉刹怛囉若闍'], pinyin: 'pí duō bēng sà nà jié lì, ē sè zhà bīng shě dì nán, nà chā chà dàn là ruò shé', audioSrc: 'audio/section1_line39.mp3' }
+                ],
+                // Page 5
+                [
+                    { lineNumber: 40, columns: ['波囉薩陀那羯唎', '阿瑟吒南', '摩訶羯囉訶若闍'], pinyin: 'bō là sà tuó nà jié lì, ē sè zhà nán, mó hē jiē là hē ruò shé', audioSrc: 'audio/section1_line40.mp3' },
+                    { lineNumber: 41, columns: ['毗多崩薩那羯唎', '薩婆舍都嚧你婆囉若闍'], pinyin: 'pí duō bēng sà nà jié lì, sà pó shě dū lú nǐ pó là ruò shé', audioSrc: 'audio/section1_line41.mp3' },
+                    { lineNumber: 42, columns: ['呼藍突悉乏難遮那舍尼', '毖沙舍悉怛囉', '阿吉尼烏陀迦囉若闍'], pinyin: 'hū lán tù xī fá nán zhē nà shě ní, bì shā shě xī dàn là, ē jí ní wū tuó jiā là ruò shé', audioSrc: 'audio/section1_line42.mp3' },
+                    { lineNumber: 43, columns: ['阿般囉視多具囉'], pinyin: 'ē bō là shì duō jù là', audioSrc: 'audio/section1_line43.mp3' },
+                    { lineNumber: 44, columns: ['摩訶', '般囉戰持'], pinyin: 'mó hē, bō là zhàn chí', audioSrc: 'audio/section1_line44.mp3' },
+                    { lineNumber: 45, columns: ['摩訶', '疊多'], pinyin: 'mó hē, dié duō', audioSrc: 'audio/section1_line45.mp3' },
+                    { lineNumber: 46, columns: ['摩訶', '帝闍'], pinyin: 'mó hē, dì shé', audioSrc: 'audio/section1_line46.mp3' },
+                    { lineNumber: 47, columns: ['摩訶', '稅多闍婆囉'], pinyin: 'mó hē, shuì duō shé pó là', audioSrc: 'audio/section1_line47.mp3' },
+                    { lineNumber: 48, columns: ['摩訶', '跋闍囉槃陀囉婆悉你', '阿唎耶多囉', '毗唎俱知', '誓婆毗闍耶'], pinyin: 'mó hē, bá là pán tuó là pó xī nǐ, ē lì yē duō là, pí lì jù zhī, shì pó pí shé yē', audioSrc: 'audio/section1_line48.mp3' },
+                    { lineNumber: 49, columns: ['跋闍囉摩禮底', '毗舍嚧多', '勃騰罔迦'], pinyin: 'bá shé là mó lǐ dǐ, pí shě lú duō, bó téng wǎng jiā', audioSrc: 'audio/section1_line49.mp3' },
+                ],
+                // Page 6
+                [
+                    { lineNumber: 50, columns: ['跋闍囉制喝那阿遮', '摩囉制婆般囉質多'], pinyin: 'bá shé là zhì hē nuó ē zhē, mó là zhì pó bō là zhì duō', audioSrc: 'audio/section1_line50.mp3' },
+                    { lineNumber: 51, columns: ['跋闍囉擅持', '毗舍囉遮', '扇多舍鞞提婆補視多'], pinyin: 'bá shé là shàn chí, pí shě là zhē, shàn duō shě pí tí pó bǔ shì duō', audioSrc: 'audio/section1_line51.mp3' },
+                    { lineNumber: 52, columns: ['蘇摩嚧波', '摩訶稅多', '阿唎耶多囉'], pinyin: 'sū mó lú bō, mó hē shuì duō, ē lì yē duō là', audioSrc: 'audio/section1_line52.mp3' },
+                    { lineNumber: 53, columns: ['摩訶婆囉阿般囉', '摩訶跋闍囉商羯囉制婆'], pinyin: 'mó hē pó là ē bō là, bá shé là shāng jié là zhì pó', audioSrc: 'audio/section1_line53.mp3' },
+                    { lineNumber: 54, columns: ['跋闍囉俱摩唎', '俱藍陀唎'], pinyin: 'bá shé là jù mó lì, jù lán tuó lì', audioSrc: 'audio/section1_line54.mp3' },
+                    { lineNumber: 55, columns: ['跋闍囉喝薩多遮', '毗地耶乾遮那摩唎迦'], pinyin: 'bá shé là hē sà duō zhē, pí dì yē qián zhē nuó mó lì jiā', audioSrc: 'audio/section1_line55.mp3' },
+                    { lineNumber: 56, columns: ['啒蘇母婆羯囉跢那', '鞞嚧遮那俱囉耶'], pinyin: 'kù sū mǔ pó jié là duō nuó, pí lú zhē nà jù lì yē', audioSrc: 'audio/section1_line56.mp3' },
+                    { lineNumber: 57, columns: ['夜囉菟瑟尼釤', '毗折藍婆摩尼遮'], pinyin: 'yè là tù sè ní shān, pí zhé lán pó mó ní zhē', audioSrc: 'audio/section1_line57.mp3' },
+                    { lineNumber: 58, columns: ['跋闍囉迦那迦波囉婆', '嚧闍那跋闍囉頓稚遮'], pinyin: 'bá shé là jiā nà jiā bō là pó, lú shé nà bá shé là dùn zhì zhē', audioSrc: 'audio/section1_line58.mp3' },
+                    { lineNumber: 59, columns: ['稅多遮迦摩囉', '刹奢尸波囉婆', '翳帝夷帝'], pinyin: 'shuì duō zhē jiā mó là, chà shē shī bō là pó, yì dì yí dì', audioSrc: 'audio/section1_line59.mp3' },
+                    { lineNumber: 60, columns: ['母陀囉羯拏', '娑鞞囉懺', '掘梵都', '印菟那麽麽寫'], pinyin: 'mǔ tuó là jié ná, suō pí là chàn, jué fàn dū, yìn tù nà mó mó xiě', audioSrc: 'audio/section1_line60.mp3' }
+                ]
+            ],
+            'assembly2': [
+                 [
+                    { lineNumber: 1, columns: ['烏𤙖', '唎瑟揭拏', '般剌舍悉多', '薩怛他伽都瑟尼釤'], pinyin: 'wū xìn, lì shai jiē ná, bo la shē xi duo, sa dan tuō, qiē dū shai ní shān', audioSrc: 'audio/section2_line1.mp3' },
+                    { lineNumber: 2, columns: ['虎𤙖', '都嚧雍', '瞻婆那'], pinyin: 'hǔ xìn, dū lú yōng, zhān pó nà', audioSrc: 'audio/section2_line2.mp3' },
+                    { lineNumber: 3, columns: ['虎𤙖', '都嚧雍', '悉眈婆那'], pinyin: 'hǔ xìn, dū lú yōng, xī dān pó nà', audioSrc: 'audio/section2_line3.mp3' },
+                    { lineNumber: 4, columns: ['虎𤙖', '都嚧雍', '波囉瑟地耶', '三般叉拏羯囉'], pinyin: 'hǔ xìn, dū lú yōng, bo la shai di ye, san bo cha, na jie la', audioSrc: 'audio/section2_line4.mp3' },
+                    { lineNumber: 5, columns: ['虎𤙖', '都嚧雍', '薩婆藥叉喝囉刹娑', '揭囉訶若闍', '毗騰崩薩那羯囉'], pinyin: 'hǔ xìn, dū lú yōng, sa po yao cha, he la cha suo, jiē la he ruò shé, pí téng bēng sà nà jiē là', audioSrc: 'audio/section2_line5.mp3' },
+                    { lineNumber: 6, columns: ['虎𤙖', '都嚧雍', '者都囉尸底南', '揭囉訶娑訶薩囉南', '毗騰崩薩那囉'], pinyin: 'hǔ xìn, dū lú yōng, zhě dū là, shī dǐ nán, jiē la hē, suō hē sà la nán, pí téng bēng sà nà la', audioSrc: 'audio/section2_line6.mp3' },
+                    { lineNumber: 7, columns: ['虎𤙖', '都嚧雍', '囉叉', '婆伽梵', '薩怛他伽都瑟尼釤', '波囉點闍吉唎', '摩訶娑訶薩囉'], pinyin: 'hǔ xìn, dū lú yōng, là chā, pó qié fàn, sa dan tuō, qiē dū shai ní shān, bō là diǎn, shé jí lì, mó hē suō hē sà la', audioSrc: 'audio/section2_line7.mp3' },
+                    { lineNumber: 8, columns: ['', '', '勃樹娑訶薩囉室咧沙', '俱知娑訶薩泥帝㘑', '阿弊提視婆唎多', '吒吒甖迦'], pinyin: 'bó shù suō hē sà la, shì lì shā, jù zhī suō hē sà ní, dì lì e bí tí shì pó, lì duō, zhà zhà yīng jiā', audioSrc: 'audio/section2_line8.mp3' },
+                    { lineNumber: 9, columns: ['', '', '摩訶跋闍囉陀囉', '帝唎菩婆那', '曼茶囉'], pinyin: 'mó hē bá shé lú tuó là, dì lì pú pó nà, màn chá la', audioSrc: 'audio/section2_line9.mp3' },
+                    { lineNumber: 10, columns: ['烏𤙖', '莎悉帝薄婆都', '麽麽', '印菟那麼麼寫'], pinyin: 'wū xìn, suō xī dì, bó pó dū, mó mó, yìn tù nà mó mó xiě', audioSrc: 'audio/section2_line10.mp3' }
+                ]
+            ],
+            'assembly3': [
+                // Page 1
+                [
+                    { lineNumber: 1, columns: ['囉闍', '婆夜'], pinyin: 'là shé, pó yè', audioSrc: 'audio/section3_line01.mp3' },
+                    { lineNumber: 2, columns: ['主囉', '跋夜'], pinyin: 'zhǔ là, bá yè', audioSrc: 'audio/section3_line02.mp3' },
+                    { lineNumber: 3, columns: ['阿祇尼', '婆夜'], pinyin: 'ē qí ní, pó yè', audioSrc: 'audio/section3_line03.mp3' },
+                    { lineNumber: 4, columns: ['烏陀迦', '婆夜'], pinyin: 'wū tuó jiā, pó yè', audioSrc: 'audio/section3_line04.mp3' },
+                    { lineNumber: 5, columns: ['毗沙', '婆夜'], pinyin: 'pí shā, pó yè', audioSrc: 'audio/section3_line05.mp3' },
+                    { lineNumber: 6, columns: ['舍薩多囉', '婆夜'], pinyin: 'shě sà duō là, pó yè', audioSrc: 'audio/section3_line06.mp3' },
+                    { lineNumber: 7, columns: ['婆囉斫羯囉', '婆夜'], pinyin: 'pó là zhuó jié là, pó yè', audioSrc: 'audio/section3_line07.mp3' },
+                    { lineNumber: 8, columns: ['突瑟叉', '婆夜'], pinyin: 'tū sè chā, pó yè', audioSrc: 'audio/section3_line08.mp3' },
+                    { lineNumber: 9, columns: ['阿舍你', '婆夜'], pinyin: 'ē shě nǐ, pó yè', audioSrc: 'audio/section3_line09.mp3' },
+                    { lineNumber: 10, columns: ['阿迦囉密', '婆夜'], pinyin: 'ē jiā là mì, pó yè', audioSrc: 'audio/section3_line10.mp3' },
+                ],
+                // Page 2
+                [
+                    { lineNumber: 11, columns: ['陀囉尼部彌劍波伽波陀', '婆夜'], pinyin: 'tuó là nǐ bù mí jiànbō qié bō tuó, pó yè', audioSrc: 'audio/section3_line11.mp3' },
+                    { lineNumber: 12, columns: ['烏囉迦婆多', '婆夜'], pinyin: 'wū là jiā pó duō, pó yè', audioSrc: 'audio/section3_line12.mp3' },
+                    { lineNumber: 13, columns: ['剌闍壇茶', '婆夜'], pinyin: 'là shé tán chá, pó yè', audioSrc: 'audio/section3_line13.mp3' },
+                    { lineNumber: 14, columns: ['那伽', '婆夜'], pinyin: 'nuó qié, pó yè', audioSrc: 'audio/section3_line14.mp3' },
+                    { lineNumber: 15, columns: ['毗條怛', '婆夜'], pinyin: 'pí tiáodàn, pó yè', audioSrc: 'audio/section3_line15.mp3' },
+                    { lineNumber: 16, columns: ['蘇波囉拏', '婆夜'], pinyin: 'sū bō là ná, pó yè', audioSrc: 'audio/section3_line16.mp3' },
+                    { lineNumber: 17, columns: ['藥叉', '揭囉訶'], pinyin: 'yàochā, jiē là hē', audioSrc: 'audio/section3_line17.mp3' },
+                    { lineNumber: 18, columns: ['囉叉私', '揭囉訶'], pinyin: 'là chā sī, jiē là hē', audioSrc: 'audio/section3_line18.mp3' },
+                    { lineNumber: 19, columns: ['畢唎多', '揭囉訶'], pinyin: 'bì lì duō, jiē là hē', audioSrc: 'audio/section3_line19.mp3' },
+                    { lineNumber: 20, columns: ['毗舍遮', '揭囉訶'], pinyin: 'pí shězhē, jiē là hē', audioSrc: 'audio/section3_line20.mp3' },
+                ],
+                // Page 3
+                [
+                    { lineNumber: 21, columns: ['部多', '揭囉訶'], pinyin: 'bù duō, jiē là hē', audioSrc: 'audio/section3_line21.mp3' },
+                    { lineNumber: 22, columns: ['鳩槃茶', '揭囉訶'], pinyin: 'jiū pánchá, jiē là hē', audioSrc: 'audio/section3_line22.mp3' },
+                    { lineNumber: 23, columns: ['補丹那', '揭囉訶'], pinyin: 'bǔ dānnuó, jiē là hē', audioSrc: 'audio/section3_line23.mp3' },
+                    { lineNumber: 24, columns: ['迦吒補丹那', '揭囉訶'], pinyin: 'jiā zhà bǔ dānnà, jiē là hē', audioSrc: 'audio/section3_line24.mp3' },
+                    { lineNumber: 25, columns: ['悉乾度', '揭囉訶'], pinyin: 'xī qiándù, jiē là hē', audioSrc: 'audio/section3_line25.mp3' },
+                    { lineNumber: 26, columns: ['阿播悉摩囉', '揭囉訶'], pinyin: 'ē bō xī mó là, jiē là hē', audioSrc: 'audio/section3_line26.mp3' },
+                    { lineNumber: 27, columns: ['烏檀摩陀', '揭囉訶'], pinyin: 'wūtánmótuó, jiē là hē', audioSrc: 'audio/section3_line27.mp3' },
+                    { lineNumber: 28, columns: ['車夜', '揭囉訶'], pinyin: 'chē yè, jiē là hē', audioSrc: 'audio/section3_line28.mp3' },
+                    { lineNumber: 29, columns: ['醯唎婆帝', '揭囉訶'], pinyin: 'xī lì pó dì, jiē là hē', audioSrc: 'audio/section3_line29.mp3' },
+                ],
+                // Page 4
+                [
+                    { lineNumber: 30, columns: ['社多', '訶唎南'], pinyin: 'shèduō, hē lì nán', audioSrc: 'audio/section3_line30.mp3' },
+                    { lineNumber: 31, columns: ['揭婆', '訶唎南'], pinyin: 'jiē pó, hē lì nán', audioSrc: 'audio/section3_line31.mp3' },
+                    { lineNumber: 32, columns: ['嚧地囉', '訶唎南'], pinyin: 'lú dì là, hē lì nán', audioSrc: 'audio/section3_line32.mp3' },
+                    { lineNumber: 33, columns: ['忙娑', '訶唎南'], pinyin: 'mángsō, hē lì nán', audioSrc: 'audio/section3_line33.mp3' },
+                    { lineNumber: 34, columns: ['謎陀', '訶唎南'], pinyin: 'mí tuó, hē lì nán', audioSrc: 'audio/section3_line34.mp3' },
+                    { lineNumber: 35, columns: ['摩闍', '訶唎南'], pinyin: 'móshé, hē lì nán', audioSrc: 'audio/section3_line35.mp3' },
+                    { lineNumber: 36, columns: ['闍多', '訶唎女'], pinyin: 'shéduō, hē lì nǚ', audioSrc: 'audio/section3_line36.mp3' },
+                    { lineNumber: 37, columns: ['視比多', '訶唎南'], pinyin: 'shì bǐ duō, hē lì nán', audioSrc: 'audio/section3_line37.mp3' },
+                    { lineNumber: 38, columns: ['毗多', '訶唎南'], pinyin: 'pí duō, hē lì nán', audioSrc: 'audio/section3_line38.mp3' },
+                    { lineNumber: 39, columns: ['婆多', '訶唎南'], pinyin: 'pó duō, hē lì nán', audioSrc: 'audio/section3_line39.mp3' },
+                ],
+                // Page 5
+                [
+                    { lineNumber: 40, columns: ['阿輸遮', '訶唎女', '', '', ''], pinyin: 'ē shū zhē, hē lì nǚ', audioSrc: 'audio/section3_line40.mp3' },
+                    { lineNumber: 41, columns: ['質多', '訶唎女', '', '', ''], pinyin: 'zhì duō, hē lì nǚ', audioSrc: 'audio/section3_line41.mp3' },
+                    { lineNumber: 42, columns: ['帝鑠薩鞞釤', '', '', '', ''], pinyin: 'dì shān sà pí shān', audioSrc: 'audio/section3_line42.mp3' },
+                    { lineNumber: 43, columns: ['薩婆揭囉訶南', '', '', '', ''], pinyin: 'sà pó jiē là hē nán', audioSrc: 'audio/section3_line43.mp3' },
+                    { lineNumber: 44, columns: ['毗陀夜闍瞋陀夜彌', '雞囉夜彌', '波唎跋囉者迦', '訖唎擔', ''], pinyin: 'pí tuó yè shé chēn tuó yè mí, jī là yè mí, bō lì bá là zhě jiā, qì lì dān', audioSrc: 'audio/section3_line44.mp3' },
+                    { lineNumber: 45, columns: ['毗陀夜闍瞋陀夜彌', '雞囉夜彌', '茶演尼', '訖唎擔', ''], pinyin: 'pí tuó yè shé chēn tuó yè mí, jī là yè mí, chá yǎn ní, qì lì dān', audioSrc: 'audio/section3_line45.mp3' },
+                    { lineNumber: 46, columns: ['毗陀夜闍瞋陀夜彌', '雞囉夜彌', '摩訶般輸般怛夜', '嚧陀囉', '訖唎擔'], pinyin: 'pí tuó yè shé chēn tuó yè mí, jī là yè mí, mó hē bō shū bō dàn yè, lú tuó là, qì lì dān', audioSrc: 'audio/section3_line46.mp3' },
+                    { lineNumber: 47, columns: ['毗陀夜闍瞋陀夜彌', '雞囉夜彌', '那囉夜拏', '訖唎擔', ''], pinyin: 'pí tuó yè shé chēn tuó yè mí, jī là yè mí, nuó là yè ná, qì lì dān', audioSrc: 'audio/section3_line47.mp3' },
+                    { lineNumber: 48, columns: ['毗陀夜闍瞋陀夜彌', '雞囉夜彌', '怛埵伽嚧茶西', '訖唎擔', ''], pinyin: 'pí tuó yè shé chēn tuó yè mí, jī là yè mí, dàn duǒ qié lú chá xī, qì lì dān', audioSrc: 'audio/section3_line48.mp3' },
+                    { lineNumber: 49, columns: ['毗陀夜闍瞋陀夜彌', '雞囉夜彌', '摩訶迦囉摩怛唎伽拏', '訖唎擔', ''], pinyin: 'pí tuó yè shé chēn tuó yè mí, jī là yè mí, mó hē jiā là mó dàn lì qié ná, qì lì dān', audioSrc: 'audio/section3_line49.mp3' },
+                ],
+                // Page 6
+                [
+                    { lineNumber: 50, columns: ['毗陀夜闍瞋陀夜彌', '雞囉夜彌', '迦波離迦', '訖唎擔', '', ''], pinyin: 'pí tuó yè shé chēn tuó yè mí, jī là yè mí, jiā bō lì jiā, qì lì dān', audioSrc: 'audio/section3_line50.mp3' },
+                    { lineNumber: 51, columns: ['毗陀夜闍瞋陀夜彌', '雞囉夜彌', '闍夜羯囉摩度羯囉', '薩婆囉他娑達那', '訖唎擔', ''], pinyin: 'pí tuó yè shé chēn tuó yè mí, jī là yè mí, shé yè jié là mó dù jié là, sà pó là tuō suō dá nà, qì lì dān', audioSrc: 'audio/section3_line51.mp3' },
+                    { lineNumber: 52, columns: ['毗陀夜闍瞋陀夜彌', '雞囉夜彌', '赭咄囉', '婆耆你', '訖唎擔', ''], pinyin: 'pí tuó yè shé chēn tuó yè mí, jī là yè mí, zhě duō là, pó qí nǐ, qì lì dān', audioSrc: 'audio/section3_line52.mp3' },
+                    { lineNumber: 53, columns: ['毗陀夜闍瞋陀夜彌', '雞囉夜彌', '毗唎羊訖唎知', '難陀雞沙囉伽拏般帝', '娑醯夜', '訖唎擔'], pinyin: 'pí tuó yè shé chēn tuó yè mí, jī là yè mí, pí lì yáng qí lì zhī, nán tuó jī shā là qié ná bō dì, suǒ xī yè, qì lì dān', audioSrc: 'audio/section3_line53.mp3' },
+                    { lineNumber: 54, columns: ['毗陀夜闍瞋陀夜彌', '雞囉夜彌', '那揭那舍囉婆拏', '訖唎擔', '', ''], pinyin: 'pí tuó yè shé chēn tuó yè mí, jī là yè mí, nà jiē nà shě là pó ná, qì lì dān', audioSrc: 'audio/section3_line54.mp3' },
+                    { lineNumber: 55, columns: ['毗陀夜闍瞋陀夜彌', '雞囉夜彌', '阿羅漢', '訖唎擔'], pinyin: 'pí tuó yè shé chēn tuó yè mí, jī là yè mí, ē luó hàn, qì lì dān', audioSrc: 'audio/section3_line55.mp3' },
+                    { lineNumber: 56, columns: ['毗陀夜闍瞋陀夜彌', '雞囉夜彌', '毗多囉伽', '訖唎擔'], pinyin: 'pí tuó yè shé chēn tuó yè mí, jī là yè mí, pí duō là qié, qì lì dān', audioSrc: 'audio/section3_line56.mp3' },
+                    { lineNumber: 57, columns: ['毗陀夜闍瞋陀夜彌', '雞囉夜彌', '跋闍囉波你', '具醯夜具醯夜', '迦地般帝', '訖唎擔'], pinyin: 'pí tuó yè shé chēn tuó yè mí, jī là yè mí, bá shé là bō nǐ, jù xī yè jù xī yè, jiā dì bō dì, qì lì dān', audioSrc: 'audio/section3_line57.mp3' },
+                    { lineNumber: 58, columns: ['毗陀夜闍瞋陀夜彌', '雞囉夜彌', '囉叉罔', '婆伽梵'], pinyin: 'pí tuó yè shé chēn tuó yè mí, jī là yè mí, là chā wǎng, pó qié fàn', audioSrc: 'audio/section3_line58.mp3' },
+                    { lineNumber: 59, columns: ['印菟那麽麽寫'], pinyin: 'yìn tù nà me me xiě', audioSrc: 'audio/section3_line59.mp3' }
+                ],
+            ],
+            'assembly4': [
+                // Page 1
+                [
+                    { lineNumber: 1, columns: ['婆伽梵', '薩怛多般怛囉'], pinyin: 'pó qié fàn, sà dá duō bō dá là', audioSrc: 'audio/section4_line1.mp3' },
+                    { lineNumber: 2, columns: ['南無', '粹都帝', '阿悉多那囉剌迦', '波囉婆悉普吒', '毗迦薩怛多鉢帝唎'], pinyin: 'ná mó, cuì dū dì, ē xī duō nà là là jiā, bō là pó xī pǔ zhà, pí jiā sà dàn duō bò dì lì', audioSrc: 'audio/section4_line2.mp3' },
+                    { lineNumber: 3, columns: ['什佛囉', '什佛囉'], pinyin: 'shí fó là, shí fó là', audioSrc: 'audio/section4_line3.mp3' },
+                    { lineNumber: 4, columns: ['陀囉', '陀囉'], pinyin: 'tuó là, tuó là', audioSrc: 'audio/section4_line4.mp3' },
+                    { lineNumber: 5, columns: ['頻陀囉', '頻陀囉'], pinyin: 'pín tuó là, pín tuó là', audioSrc: 'audio/section4_line5.mp3' },
+                    { lineNumber: 6, columns: ['瞋陀', '瞋陀'], pinyin: 'chēn tuó, chēn tuó', audioSrc: 'audio/section4_line6.mp3' },
+                    { lineNumber: 7, columns: ['虎𤙖', '虎𤙖'], pinyin: 'hǔ xìn, hǔ xìn', audioSrc: 'audio/section4_line7.mp3' },
+                    { lineNumber: 8, columns: ['泮吒', '泮吒', '泮吒', '泮吒', '泮吒'], pinyin: 'pàn zhà, pàn zhà, pàn zhà, pàn zhà, pàn zhà', audioSrc: 'audio/section4_line8.mp3' },
+                    { lineNumber: 9, columns: ['阿波囉提訶多泮'], pinyin: 'ē bō là tí hē duō pàn', audioSrc: 'audio/section4_line9.mp3' },
+                    { lineNumber: 10, columns: ['婆囉波囉陀泮'], pinyin: 'pó là bō là tuó pàn', audioSrc: 'audio/section4_line10.mp3' },
+                    { lineNumber: 11, columns: ['阿素囉毗陀囉波迦泮'], pinyin: 'ē sù là pí tuó là bō jiā pàn', audioSrc: 'audio/section4_line11.mp3' }
+                ],
+                // Page 2
+                [
+                    { lineNumber: 12, columns: ['薩婆', '提鞞', '弊泮'], pinyin: 'sà pó, tí pí, bì pàn', audioSrc: 'audio/section4_line12.mp3' },
+                    { lineNumber: 13, columns: ['薩婆', '那伽', '弊泮'], pinyin: 'sà pó, nà qié, bì pàn', audioSrc: 'audio/section4_line13.mp3' },
+                    { lineNumber: 14, columns: ['薩婆', '藥叉', '弊泮'], pinyin: 'sà pó, yào chā, bì pàn', audioSrc: 'audio/section4_line14.mp3' },
+                    { lineNumber: 15, columns: ['薩婆', '乾闥婆', '弊泮'], pinyin: 'sà pó, qián tà pó, bì pàn', audioSrc: 'audio/section4_line15.mp3' },
+                    { lineNumber: 16, columns: ['薩婆', '補丹那', '弊泮'], pinyin: 'sà pó, bǔ dān nà, bì pàn', audioSrc: 'audio/section4_line16.mp3' },
+                    { lineNumber: 17, columns: ['迦吒', '補丹那', '弊泮'], pinyin: 'jiā zhā, bǔ dān nà, bì pàn', audioSrc: 'audio/section4_line17.mp3' },
+                    { lineNumber: 18, columns: ['薩婆', '突狼枳帝', '弊泮'], pinyin: 'sà pó, tū láng zhǐ dì, bì pàn', audioSrc: 'audio/section4_line18.mp3' },
+                    { lineNumber: 19, columns: ['薩婆', '突澀比𠾆', '訖瑟帝', '弊泮'], pinyin: 'sà pó, tū sè bǐ lí, qì sè dì, bì pàn', audioSrc: 'audio/section4_line19.mp3' },
+                    { lineNumber: 20, columns: ['薩婆', '什婆𠾆', '弊泮'], pinyin: 'sà pó, shí pó lí, bì pàn', audioSrc: 'audio/section4_line20.mp3' },
+                    { lineNumber: 21, columns: ['薩婆', '阿播悉', '摩𠾆', '弊泮'], pinyin: 'sà pó, ē bō xī, mó lí, bì pàn', audioSrc: 'audio/section4_line21.mp3' }
+                ],
+                // Page 3
+                [
+                    { lineNumber: 22, columns: ['薩婆', '舍囉婆拏', '弊泮'], pinyin: 'sà pó, shě là pó ná, bì pàn', audioSrc: 'audio/section4_line22.mp3' },
+                    { lineNumber: 23, columns: ['薩婆', '地帝雞', '弊泮'], pinyin: 'sà pó, dì dì jī, bì pàn', audioSrc: 'audio/section4_line23.mp3' },
+                    { lineNumber: 24, columns: ['薩婆', '怛摩陀繼', '弊泮'], pinyin: 'sà pó, dàn mó tuó jì, bì pàn', audioSrc: 'audio/section4_line24.mp3' },
+                    { lineNumber: 25, columns: ['薩婆', '毗陀耶', '囉誓遮𠾆', '弊泮'], pinyin: 'sà pó, pí tuó yē, là shì zhē lí, bì pàn', audioSrc: 'audio/section4_line25.mp3' },
+                    { lineNumber: 26, columns: ['闍夜羯囉', '摩度羯囉'], pinyin: 'shé yè jié là, mó dù jié là', audioSrc: 'audio/section4_line26.mp3' },
+                    { lineNumber: 27, columns: ['薩婆', '囉他', '娑陀雞', '弊泮'], pinyin: 'sà pó, là tuō, suō tuó jī, bì pàn', audioSrc: 'audio/section4_line27.mp3' },
+                    { lineNumber: 28, columns: ['毗地夜', '遮唎', '弊泮'], pinyin: 'pí dì yè, zhē lì, bì pàn', audioSrc: 'audio/section4_line28.mp3' },
+                    { lineNumber: 29, columns: ['者都囉', '縛耆你', '弊泮'], pinyin: 'zhě dū là, fù qí nǐ, bì pàn', audioSrc: 'audio/section4_line29.mp3' },
+                    { lineNumber: 30, columns: ['跋闍囉', '俱摩唎'], pinyin: 'bá shé là, jù mó lì', audioSrc: 'audio/section4_line30.mp3' },
+                    { lineNumber: 31, columns: ['毗陀夜', '囉誓弊泮'], pinyin: 'pí tuó yè, là shì bì pàn', audioSrc: 'audio/section4_line31.mp3' }
+                ],
+                // Page 4
+                [
+                    { lineNumber: 32, columns: ['摩訶', '波囉', '丁羊', '乂耆唎', '弊泮'], pinyin: 'mó hē, bō là, dīng yáng, yì qí lì, bì pàn', audioSrc: 'audio/section4_line32.mp3' },
+                    { lineNumber: 33, columns: ['跋闍囉', '商羯囉夜'], pinyin: 'bá shé là, shāng jié là yè', audioSrc: 'audio/section4_line33.mp3' },
+                    { lineNumber: 34, columns: ['波囉', '丈耆囉闍', '耶泮'], pinyin: 'bō là, zhàng qí là shé, yē pàn', audioSrc: 'audio/section4_line34.mp3' },
+                    { lineNumber: 35, columns: ['摩訶', '迦囉夜'], pinyin: 'mó hē, jiā là yè', audioSrc: 'audio/section4_line35.mp3' },
+                    { lineNumber: 36, columns: ['摩訶', '末怛唎迦拏'], pinyin: 'mó hē, mò dàn lì jiā ná', audioSrc: 'audio/section4_line36.mp3' },
+                    { lineNumber: 37, columns: ['南無', '娑羯唎多', '夜泮'], pinyin: 'ná mó, suō jié lì duō, yè pàn', audioSrc: 'audio/section4_line37.mp3' },
+                    { lineNumber: 38, columns: ['毖瑟拏婢', '曳泮'], pinyin: 'bì sè ná bì, yè pàn', audioSrc: 'audio/section4_line38.mp3' },
+                    { lineNumber: 39, columns: ['勃囉訶牟尼', '曳泮'], pinyin: 'bó là hē móu ní, yè pàn', audioSrc: 'audio/section4_line39.mp3' },
+                    { lineNumber: 40, columns: ['阿耆尼', '曳泮'], pinyin: 'ē qí ní, yè pàn', audioSrc: 'audio/section4_line40.mp3' },
+                    { lineNumber: 41, columns: ['摩訶羯唎', '曳泮'], pinyin: 'mó hē jié lì, yè pàn', audioSrc: 'audio/section4_line41.mp3' }
+                ],
+                // Page 5
+                [
+                    { lineNumber: 42, columns: ['羯囉檀遲', '曳泮'], pinyin: 'jié là tán chí, yè pàn', audioSrc: 'audio/section4_line42.mp3' },
+                    { lineNumber: 43, columns: ['蔑怛唎', '曳泮'], pinyin: 'miè dàn lì, yè pàn', audioSrc: 'audio/section4_line43.mp3' },
+                    { lineNumber: 44, columns: ['嘮怛唎', '曳泮'], pinyin: 'lào dàn lì, yè pàn', audioSrc: 'audio/section4_line44.mp3' },
+                    { lineNumber: 45, columns: ['遮文茶', '曳泮'], pinyin: 'zhē wén chá, yè pàn', audioSrc: 'audio/section4_line45.mp3' },
+                    { lineNumber: 46, columns: ['羯邏囉怛唎', '曳泮'], pinyin: 'jié luó là dàn lì, yè pàn', audioSrc: 'audio/section4_line46.mp3' },
+                    { lineNumber: 47, columns: ['迦般唎', '曳泮'], pinyin: 'jiā bō lì, yè pàn', audioSrc: 'audio/section4_line47.mp3' },
+                    { lineNumber: 48, columns: ['阿地目質多', '迦尸摩舍那'], pinyin: 'ē dì mù zhì duō, jiā shī mó shě nuó', audioSrc: 'audio/section4_line48.mp3' },
+                    { lineNumber: 49, columns: ['婆私你', '曳泮'], pinyin: 'pó sī nǐ, yè pàn', audioSrc: 'audio/section4_line49.mp3' },
+                    { lineNumber: 50, columns: ['演吉質', '薩埵婆寫'], pinyin: 'yǎn jí zhì, sà duǒ pó xiě', audioSrc: 'audio/section4_line50.mp3' },
+                    { lineNumber: 51, columns: ['麽麽印菟那麽麽寫'], pinyin: 'mó mó yìn tù nà mó mó xiě', audioSrc: 'audio/section4_line51.mp3' }
+                ]
+            ],
+            'assembly5': [
+                // Page 1
+                [
+                    { lineNumber: 1, columns: ['突瑟吒', '質多'], pinyin: 'tū sè zhà, zhì duō', audioSrc: 'audio/section5_line1.mp3' },
+                    { lineNumber: 2, columns: ['阿末怛唎', '質多'], pinyin: 'ē mò dàn lì, zhì duō', audioSrc: 'audio/section5_line2.mp3' },
+                    { lineNumber: 3, columns: ['烏闍', '訶囉'], pinyin: 'wū shé, hē là', audioSrc: 'audio/section5_line3.mp3' },
+                    { lineNumber: 4, columns: ['伽婆', '訶囉'], pinyin: 'qié pó, hē là', audioSrc: 'audio/section5_line4.mp3' },
+                    { lineNumber: 5, columns: ['嚧地囉', '訶囉'], pinyin: 'lú dì là, hē là', audioSrc: 'audio/section5_line5.mp3' },
+                    { lineNumber: 6, columns: ['婆娑', '訶囉'], pinyin: 'pó suō, hē là', audioSrc: 'audio/section5_line6.mp3' },
+                    { lineNumber: 7, columns: ['摩闍', '訶囉'], pinyin: 'mó shé, hē là', audioSrc: 'audio/section5_line7.mp3' },
+                    { lineNumber: 8, columns: ['闍多', '訶囉'], pinyin: 'shé duō, hē là', audioSrc: 'audio/section5_line8.mp3' },
+                    { lineNumber: 9, columns: ['視毖多', '訶囉'], pinyin: 'shì bì duō, hē là', audioSrc: 'audio/section5_line9.mp3' },
+                    { lineNumber: 10, columns: ['跋略夜', '訶囉'], pinyin: 'bá lüè yè, hē là', audioSrc: 'audio/section5_line10.mp3' }
+                ],
+                // Page 2
+                [
+                    { lineNumber: 11, columns: ['乾陀', '訶囉'], pinyin: 'qián tuó, hē là', audioSrc: 'audio/section5_line11.mp3' },
+                    { lineNumber: 12, columns: ['布史波', '訶囉'], pinyin: 'bù shǐ bō, hē là', audioSrc: 'audio/section5_line12.mp3' },
+                    { lineNumber: 13, columns: ['頗囉', '訶囉'], pinyin: 'pō là, hē là', audioSrc: 'audio/section5_line13.mp3' },
+                    { lineNumber: 14, columns: ['婆寫', '訶囉'], pinyin: 'pó xiě, hē là', audioSrc: 'audio/section5_line14.mp3' },
+                    { lineNumber: 15, columns: ['般波', '質多'], pinyin: 'bō bō, zhì duō', audioSrc: 'audio/section5_line15.mp3' },
+                    { lineNumber: 16, columns: ['突瑟吒', '質多'], pinyin: 'tū sè zhà, zhì duō', audioSrc: 'audio/section5_line16.mp3' },
+                    { lineNumber: 17, columns: ['嘮陀囉', '質多'], pinyin: 'lào tuó là, zhì duō', audioSrc: 'audio/section5_line17.mp3' },
+                    { lineNumber: 18, columns: ['藥叉', '揭囉訶'], pinyin: 'yào chā, jiē là hē', audioSrc: 'audio/section5_line18.mp3' },
+                    { lineNumber: 19, columns: ['囉刹娑', '揭囉訶'], pinyin: 'là chà suō, jiē là hē', audioSrc: 'audio/section5_line19.mp3' },
+                    { lineNumber: 20, columns: ['閉隸多', '揭囉訶'], pinyin: 'bì lì duō, jiē là hē', audioSrc: 'audio/section5_line20.mp3' }
+                ],
+                // Page 3
+                [
+                    { lineNumber: 21, columns: ['毗舍遮', '揭囉訶'], pinyin: 'pí shě zhē, jiē là hē', audioSrc: 'audio/section5_line21.mp3' },
+                    { lineNumber: 22, columns: ['部多', '揭囉訶'], pinyin: 'bù duō, jiē là hē', audioSrc: 'audio/section5_line22.mp3' },
+                    { lineNumber: 23, columns: ['鳩槃茶', '揭囉訶'], pinyin: 'jiū pán chá, jiē là hē', audioSrc: 'audio/section5_line23.mp3' },
+                    { lineNumber: 24, columns: ['悉乾陀', '揭囉訶'], pinyin: 'xī qián tuó, jiē là hē', audioSrc: 'audio/section5_line24.mp3' },
+                    { lineNumber: 25, columns: ['烏怛摩陀', '揭囉訶'], pinyin: 'wū dàn mó tuó, jiē là hē', audioSrc: 'audio/section5_line25.mp3' },
+                    { lineNumber: 26, columns: ['車夜', '揭囉訶'], pinyin: 'chē yè, jiē là hē', audioSrc: 'audio/section5_line26.mp3' },
+                    { lineNumber: 27, columns: ['阿播薩摩囉', '揭囉訶'], pinyin: 'ē bō sà mó là, jiē là hē', audioSrc: 'audio/section5_line27.mp3' },
+                    { lineNumber: 28, columns: ['宅袪革茶耆尼', '揭囉訶'], pinyin: 'zhái qū gé chá qí ní, jiē là hē', audioSrc: 'audio/section5_line28.mp3' },
+                    { lineNumber: 29, columns: ['唎佛帝', '揭囉訶'], pinyin: 'lì fó dì, jiē là hē', audioSrc: 'audio/section5_line29.mp3' },
+                    { lineNumber: 30, columns: ['闍彌迦', '揭囉訶'], pinyin: 'shé mí jiā, jiē là hē', audioSrc: 'audio/section5_line30.mp3' }
+                ],
+                // Page 4
+                [
+                    { lineNumber: 31, columns: ['舍俱尼', '揭囉訶'], pinyin: 'shě jù ní, jiē là hē', audioSrc: 'audio/section5_line31.mp3' },
+                    { lineNumber: 32, columns: ['姥陀囉難地迦', '揭囉訶'], pinyin: 'mǔ tuó là nán dì jiā, jiē là hē', audioSrc: 'audio/section5_line32.mp3' },
+                    { lineNumber: 33, columns: ['阿藍婆', '揭囉訶'], pinyin: 'ē lán pó, jiē là hē', audioSrc: 'audio/section5_line33.mp3' },
+                    { lineNumber: 34, columns: ['乾度波尼', '揭囉訶'], pinyin: 'qián dù bō ní, jiē là hē', audioSrc: 'audio/section5_line34.mp3' },
+                    { lineNumber: 35, columns: ['什伐囉堙迦醯', '迦'], pinyin: 'shí fá là yīn jiā xī, jiā', audioSrc: 'audio/section5_line35.mp3' },
+                    { lineNumber: 36, columns: ['墜帝藥', '迦'], pinyin: 'zhuì dì yào, jiā', audioSrc: 'audio/section5_line36.mp3' },
+                    { lineNumber: 37, columns: ['怛隸帝藥', '迦'], pinyin: 'dá lì dì yào, jiā', audioSrc: 'audio/section5_line37.mp3' },
+                    { lineNumber: 38, columns: ['者突託', '迦'], pinyin: 'zhě tū tuō, jiā', audioSrc: 'audio/section5_line38.mp3' },
+                    { lineNumber: 39, columns: ['尼提什伐囉', ''], pinyin: 'ní tí shí fá là', audioSrc: 'audio/section5_line39.mp3' },
+                    { lineNumber: 40, columns: ['毖釤摩什伐囉', ''], pinyin: 'bì shān mó shí fá là', audioSrc: 'audio/section5_line40.mp3' }
+                ],
+                // Page 5
+                [
+                    { lineNumber: 41, columns: ['薄底', '迦'], pinyin: 'bó dǐ, jiā', audioSrc: 'audio/section5_line41.mp3' },
+                    { lineNumber: 42, columns: ['鼻底', '迦'], pinyin: 'bí dǐ, jiā', audioSrc: 'audio/section5_line42.mp3' },
+                    { lineNumber: 43, columns: ['室隷瑟密', '迦'], pinyin: 'shì lì sè mì, jiā', audioSrc: 'audio/section5_line43.mp3' },
+                    { lineNumber: 44, columns: ['娑你般帝', '迦'], pinyin: 'suō nǐ bō dì, jiā', audioSrc: 'audio/section5_line44.mp3' },
+                    { lineNumber: 45, columns: ['薩婆什伐囉', ''], pinyin: 'sà pó shí fá là', audioSrc: 'audio/section5_line45.mp3' },
+                    { lineNumber: 46, columns: ['室嚧吉帝', '末陀鞞達嚧制劍'], pinyin: 'shì lú jí dì, mò tuó pí dá lú zhì jiàn', audioSrc: 'audio/section5_line46.mp3' },
+                    { lineNumber: 47, columns: ['阿綺', '嚧鉗'], pinyin: 'ē qǐ, lú qián', audioSrc: 'audio/section5_line47.mp3' },
+                    { lineNumber: 48, columns: ['目佉', '嚧鉗'], pinyin: 'mù qué, lú qián', audioSrc: 'audio/section5_line48.mp3' },
+                    { lineNumber: 49, columns: ['羯唎突', '嚧鉗'], pinyin: 'jié lì tū, lú qián', audioSrc: 'audio/section5_line49.mp3' },
+                    { lineNumber: 50, columns: ['揭囉訶', '揭藍'], pinyin: 'jiē là hē, jiē lán', audioSrc: 'audio/section5_line50.mp3' }
+                ],
+                // Page 6
+                [
+                    { lineNumber: 51, columns: ['羯拏', '輸藍'], pinyin: 'jié ná, shū lán', audioSrc: 'audio/section5_line51.mp3' },
+                    { lineNumber: 52, columns: ['憚多', '輸藍'], pinyin: 'dàn duō, shū lán', audioSrc: 'audio/section5_line52.mp3' },
+                    { lineNumber: 53, columns: ['迄唎夜', '輸藍'], pinyin: 'qì lì yè, shū lán', audioSrc: 'audio/section5_line53.mp3' },
+                    { lineNumber: 54, columns: ['末麽', '輸藍'], pinyin: 'mò mó, shū lán', audioSrc: 'audio/section5_line54.mp3' },
+                    { lineNumber: 55, columns: ['跋唎室婆', '輸藍'], pinyin: 'bá lì shì pó, shū lán', audioSrc: 'audio/section5_line55.mp3' },
+                    { lineNumber: 56, columns: ['毖栗瑟吒', '輸藍'], pinyin: 'bì lì sè zhà, shū lán', audioSrc: 'audio/section5_line56.mp3' },
+                    { lineNumber: 57, columns: ['烏陀囉', '輸藍'], pinyin: 'wū tuó là, shū lán', audioSrc: 'audio/section5_line57.mp3' },
+                    { lineNumber: 58, columns: ['羯知', '輸藍'], pinyin: 'jié zhī, shū lán', audioSrc: 'audio/section5_line58.mp3' },
+                    { lineNumber: 59, columns: ['跋悉帝', '輸藍'], pinyin: 'bá xī dì, shū lán', audioSrc: 'audio/section5_line59.mp3' },
+                    { lineNumber: 60, columns: ['鄔嚧', '輸藍'], pinyin: 'wū lú, shū lán', audioSrc: 'audio/section5_line60.mp3' }
+                ],
+                // Page 7 
+                [
+                    { lineNumber: 61, columns: ['常伽', '輸藍'], pinyin: 'cháng qié, shū lán', audioSrc: 'audio/section5_line61.mp3' },
+                    { lineNumber: 62, columns: ['喝悉多', '輸藍'], pinyin: 'hē xī duō, shū lán', audioSrc: 'audio/section5_line62.mp3' },
+                    { lineNumber: 63, columns: ['跋陀', '輸藍'], pinyin: 'bá tuó, shū lán', audioSrc: 'audio/section5_line63.mp3' },
+                    { lineNumber: 64, columns: ['娑房盎伽般囉丈伽', '輸藍'], pinyin: 'suō fáng àng qié bō là zhàng qié, shū lán', audioSrc: 'audio/section5_line64.mp3' },
+                    { lineNumber: 65, columns: ['部多毖跢茶', ''], pinyin: 'bù duō bì duō chá', audioSrc: 'audio/section5_line65.mp3' },
+                    { lineNumber: 66, columns: ['茶耆尼什婆囉', ''], pinyin: 'chá qí ní shí pó là', audioSrc: 'audio/section5_line66.mp3' },
+                    { lineNumber: 67, columns: ['陀突嚧迦建咄嚧吉知婆路多毗', ''], pinyin: 'tuó tū lú jiā jiàn dū lú jí zhī pó lù duō pí', audioSrc: 'audio/section5_line67.mp3' },
+                    { lineNumber: 68, columns: ['薩般嚧訶凌伽', ''], pinyin: 'sà bō lú hē líng qié', audioSrc: 'audio/section5_line68.mp3' },
+                    { lineNumber: 69, columns: ['輸沙怛囉娑那羯囉', ''], pinyin: 'shū shā dàn là suō nà jié là', audioSrc: 'audio/section5_line69.mp3' },
+                    { lineNumber: 70, columns: ['毗沙喻迦', ''], pinyin: 'pí shā yù jiā', audioSrc: 'audio/section5_line70.mp3' }
+                ],
+// Page 8 
+                [
+                    { lineNumber: 71, columns: ['阿耆尼烏陀迦', '末囉鞞囉建跢囉'], pinyin: 'ē qí ní wū tuó jiā, mò là pí là jiàn duò là', audioSrc: 'audio/section5_line71.mp3' },
+                    { lineNumber: 72, columns: ['阿迦囉密唎咄怛斂部迦', '地栗剌吒'], pinyin: 'ē jiā là mì lì dū dá liǎn bù jiā, dì lì là zhà', audioSrc: 'audio/section5_line72.mp3' },
+                    { lineNumber: 73, columns: ['毖唎瑟質迦', '薩婆那俱囉'], pinyin: 'bì lì sè zhì jiā, sà pó nà jù là', audioSrc: 'audio/section5_line73.mp3' },
+                    { lineNumber: 74, columns: ['肆引伽弊', '揭囉唎藥叉怛囉芻'], pinyin: 'sì yǐn qié bì, jiē là lì yào chā dàn là chú', audioSrc: 'audio/section5_line74.mp3' },
+                    { lineNumber: 75, columns: ['末囉視吠帝釤娑鞞釤', '悉怛多鉢鉢囉'], pinyin: 'mò là shì fèi dì shān suō pí shān, xī dān duō bō dá là', audioSrc: 'audio/section5_line75.mp3' },
+                    { lineNumber: 76, columns: ['摩訶跋闍囉瑟尼釤', '摩訶般賴丈耆藍'], pinyin: 'mó hē bá shé lú sè ní shān, mó hē bō lài zhàng qí lán', audioSrc: 'audio/section5_line76.mp3' },
+                    { lineNumber: 77, columns: ['夜波突陀舍喻闍那', '辮怛隷拏'], pinyin: 'yè bō tū tuó shě yù shé nuó, biàn dá lì ná', audioSrc: 'audio/section5_line77.mp3' },
+                    { lineNumber: 78, columns: ['毗陀耶', '槃曇迦嚧彌'], pinyin: 'pí tuó yē, pán tán jiā lú mí', audioSrc: 'audio/section5_line78.mp3' },
+                    { lineNumber: 79, columns: ['帝殊', '槃曇迦嚧彌'], pinyin: 'dì shū, pán tán jiā lú mí', audioSrc: 'audio/section5_line79.mp3' },
+                    { lineNumber: 80, columns: ['般囉毗陀', '槃曇迦嚧彌'], pinyin: 'bō là pí tuó, pán tán jiā lú mí', audioSrc: 'audio/section5_line80.mp3' },
+                ],
+                // Page 9 
+                [
+                    { lineNumber: 81, columns: ['跢姪他', ''], pinyin: 'dā zhí tuō', audioSrc: 'audio/section5_line81.mp3' },
+                    { lineNumber: 82, columns: ['唵', ''], pinyin: 'nān', audioSrc: 'audio/section5_line82.mp3'},
+                    { lineNumber: 83, columns: ['阿那隷', ''], pinyin: 'ē nà lì', audioSrc: 'audio/section5_line83.mp3'},
+                    { lineNumber: 84, columns: ['毗舍提', ''], pinyin: 'pí shě tí', audioSrc: 'audio/section5_line84.mp3'},
+                    { lineNumber: 85, columns: ['鞞囉跋闍囉陀唎', ''], pinyin: 'pí là bá shé là tuó lì', audioSrc: 'audio/section5_line85.mp3'},
+                    { lineNumber: 86, columns: ['槃陀槃陀你', ''], pinyin: 'pán tuó pán tuó nǐ', audioSrc: 'audio/section5_line86.mp3'},
+                    { lineNumber: 87, columns: ['跋闍囉謗尼泮', ''], pinyin: 'bá shé là bàng ní pàn', audioSrc: 'audio/section5_line87.mp3'},
+                    { lineNumber: 88, columns: ['虎𤙖都嚧甕泮', ''], pinyin: 'hǔ xìn dū lú yōng pàn', audioSrc: 'audio/section5_line88.mp3'},
+                    { lineNumber: 89, columns: ['莎婆訶', ''], pinyin: 'suō pó hē', audioSrc: 'audio/section5_line89.mp3'}
+                ]
+            ]
+        };
+
+        const sectionMap = {
+            'verses': { name: '偈頌' },
+            'assembly1': { name: '第一會' },
+            'assembly2': { name: '第二會' },
+            'assembly3': { name: '第三會' },
+            'assembly4': { name: '第四會' },
+            'assembly5': { name: '第五會' },
+        };
+
+        class LengyanApp {
+            constructor() {
+                window.onerror = (msg, url, line, col, error) => {
+                    console.error('Global error:', {msg, url, line, col, error});
+                    alert(`程式發生嚴重錯誤，請重新整理頁面。
+錯誤訊息: ${msg}`);
+                };
+
+                this.state = {
+                    currentAssemblyId: 'assembly1',
+                    currentLineIndex: null,
+                    // Start from the first page
+                    currentPageIndex: 0,
+                    lastSelectedAudioSrc: null,
+                    isRecording: false,
+                    mediaRecorder: null,
+                    userAudioBlob: null,
+                    learningMode: 'default',
+                    stream: null, // Keep track of the stream to stop it
+                };
+                this.elements = {
+                    sectionSelector: document.getElementById('sectionSelector'),
+                    modeSelector: document.getElementById('modeSelector'),
+                    mantraDisplay: document.getElementById('mantraDisplay'),
+                    paginationControls: document.getElementById('paginationControls'),
+                    recordBtn: document.getElementById('recordBtn'),
+                    playMyRecBtn: document.getElementById('playMyRecBtn'),
+                    playOverlayBtn: document.getElementById('playOverlayBtn'),
+                    volumeControls: document.getElementById('volumeControls'),
+                    templateVolume: document.getElementById('templateVolume'),
+                    micVolume: document.getElementById('micVolume'),
+                    standardAudioPlayer: document.getElementById('standardAudioPlayer'),
+                    userAudioPlayer: document.getElementById('userAudioPlayer'),
+                    togglePinyinBtn: document.getElementById('togglePinyinBtn'),
+                    floatingRecorder: document.getElementById('floatingRecorder'),
+                    recorderHeader: document.getElementById('recorderHeader'),
+                    recorderToggle: document.getElementById('recorderToggle'),
+                    recorderContent: document.getElementById('recorderContent'),
+                    recorderStatus: document.getElementById('recorderStatus'),
+                };
+                this.modes = {
+                    puzzle: new PuzzleMode(this),
+                    quiz: new QuizMode(this),
+                };
+            }
+
+            init() {
+                this.renderSectionSelector();
+                this.renderModeSelector();
+                this.loadAssembly(this.state.currentAssemblyId);
+                this.setupEventListeners();
+                this.loadVolumeSettings();
+                this.loadPinyinVisibility();
+                this.initFloatingRecorder();
+            }
+
+            setupEventListeners() {
+                this.elements.sectionSelector.addEventListener('click', e => {
+                    const btn = e.target.closest('.section-btn');
+                    if (btn) this.loadAssembly(btn.dataset.id);
+                });
+
+                this.elements.modeSelector.addEventListener('click', e => {
+                    const btn = e.target.closest('.section-btn');
+                    if (btn) this.switchMode(btn.dataset.mode);
+                });
+
+                this.elements.mantraDisplay.addEventListener('click', e => {
+                    const el = e.target.closest('tr, .mantra-sentence-grid');
+                    if (el && this.state.learningMode === 'default') {
+                        this.handleMantraClick(parseInt(el.dataset.index, 10));
+                    }
+                });
+
+                this.elements.paginationControls.addEventListener('click', e => {
+                    const btn = e.target.closest('.pagination-btn');
+                    if (!btn || btn.disabled) return;
+                    const action = btn.dataset.action;
+                    if (action === 'prev') this.state.currentPageIndex--;
+                    if (action === 'next') this.state.currentPageIndex++;
+                    this.state.currentLineIndex = null;
+                    this.renderMantraView();
+                });
+
+                this.elements.recordBtn.addEventListener('click', () => this.toggleGlobalRecording());
+                this.elements.playMyRecBtn.addEventListener('click', () => this.playUserRecording());
+                this.elements.playOverlayBtn.addEventListener('click', () => this.playOverlay());
+                
+                // Use a single handler for both volume sliders
+                const volumeUpdateHandler = e => this.updateVolumeSliderStyle(e.target);
+                this.elements.templateVolume.addEventListener('input', this.debounce(volumeUpdateHandler, 50));
+                this.elements.micVolume.addEventListener('input', this.debounce(volumeUpdateHandler, 50));
+
+                this.elements.togglePinyinBtn.addEventListener('click', () => this.togglePinyin());
+                this.elements.recorderToggle.addEventListener('click', () => this.toggleRecorderCollapse());
+            }
+
+            debounce(func, wait) {
+                let timeout;
+                return (...args) => {
+                    clearTimeout(timeout);
+                    timeout = setTimeout(() => func.apply(this, args), wait);
+                };
+            }
+
+            renderSectionSelector() {
+                this.elements.sectionSelector.innerHTML = Object.entries(sectionMap)
+                    .map(([id, { name }]) => `<button class="btn section-btn ${id === this.state.currentAssemblyId ? 'active' : ''}" data-id="${id}">${name}</button>`)
+                    .join('');
+            }
+
+            renderModeSelector() {
+                this.elements.modeSelector.querySelectorAll('.section-btn').forEach(btn => {
+                    btn.classList.toggle('active', btn.dataset.mode === this.state.learningMode);
+                });
+            }
+
+            loadAssembly(assemblyId) {
+                this.state.currentAssemblyId = assemblyId;
+                this.elements.sectionSelector.querySelectorAll('.section-btn').forEach(btn => {
+                    btn.classList.toggle('active', btn.dataset.id === assemblyId);
+                });
+                this.state.currentLineIndex = null;
+                this.state.currentPageIndex = 0;
+                this.switchMode('default');
+            }
+
+            // =================================================================
+            // ===== 核心修改：新的 switchMode 函式，用於嵌入影片 =====
+            // =================================================================
+            switchMode(mode) {
+                this.state.learningMode = mode;
+                this.renderModeSelector();
+
+                const mantraDisplay = this.elements.mantraDisplay;
+                const paginationControls = this.elements.paginationControls;
+                const assemblyId = this.state.currentAssemblyId;
+                const assemblyName = sectionMap[assemblyId]?.name || '';
+
+                if (mode === 'follow') {
+                    // --- 進入「跟讀模式」時，顯示影片播放器 ---
+                    mantraDisplay.innerHTML = ''; // 清空咒語表格
+                    paginationControls.style.display = 'none'; // 隱藏分頁控制器
+
+                    // 影片的路徑會根據當前選擇的會別 (assemblyId) 動態生成
+                    // 例如，選擇第一會時，路徑為 "videos/assembly1_video.mp4"
+                    const videoPath = `videos/${assemblyId}_video.mp4`;
+
+                    const localVideoHtml = `
+                        <div style="padding: 1rem;">
+                             <h3 style="text-align: center; margin-bottom: 1rem;">${assemblyName} - 連續跟讀影片</h3>
+                             <video controls width="100%" style="border-radius: 12px; max-width: 960px; margin: 0 auto; display: block;" autoplay>
+                                 <source src="${videoPath}" type="video/mp4">
+                                 您的瀏覽器不支援影片播放，或是找不到影片檔案。<br>
+                                 請確認在 videos 資料夾中有一個名為 "${assemblyId}_video.mp4" 的檔案。
+                             </video>
+                        </div>
+                    `;
+                    mantraDisplay.innerHTML = localVideoHtml;
+
+                } else {
+                    // --- 切換回其他模式時，恢復正常顯示 ---
+                    paginationControls.style.display = 'flex';
+                    this.renderMantraView();
+                }
+            }
+
+            renderMantraView() {
+                const { currentAssemblyId, currentLineIndex, learningMode, currentPageIndex } = this.state;
+                let assemblyData = fullMantraData[currentAssemblyId];
+                
+                if (!assemblyData || assemblyData.length === 0) {
+                    this.elements.mantraDisplay.innerHTML = `<p style="text-align:center; padding: 2rem;">此會別內容尚未建立。</p>`;
+                    this.elements.paginationControls.classList.add('hidden');
+                    return;
+                }
+
+                const isPaginated = Array.isArray(assemblyData[0]);
+                let pageData;
+
+                if (isPaginated) {
+                    this.renderPaginationControls(assemblyData.length);
+                    pageData = assemblyData[currentPageIndex];
+                } else {
+                    this.elements.paginationControls.classList.add('hidden');
+                    pageData = assemblyData;
+                }
+                
+                if (!pageData || pageData.length === 0) {
+                    this.elements.mantraDisplay.innerHTML = `<p style="text-align:center; padding: 2rem;">此頁內容尚未建立。</p>`;
+                    return;
+                }
+
+                const displayContainer = this.elements.mantraDisplay;
+                displayContainer.innerHTML = ''; // Clear previous content
+
+                if (learningMode === 'default' || (learningMode !== 'default' && currentLineIndex === null)) {
+                     this.renderMantraAsTable(pageData, currentLineIndex);
+
+                     if (learningMode !== 'default') {
+                         displayContainer.insertAdjacentHTML('afterbegin', `<p style="text-align:center; padding-bottom: 1rem; color: var(--primary-color);">請先在上方表格中選擇一句咒語，以開始「${this.modes[learningMode].name || learningMode}」模式。</p>`);
+                    }
+                } else if (learningMode === 'puzzle') {
+                    this.modes.puzzle.renderPuzzle(pageData[currentLineIndex]);
+                } else if (learningMode === 'quiz') {
+                    this.modes.quiz.renderQuiz(pageData);
+                }
+            }
+            
+            renderPaginationControls(totalPages) {
+                if (totalPages <= 1) {
+                    this.elements.paginationControls.classList.add('hidden');
+                    return;
+                }
+                const currentPage = this.state.currentPageIndex + 1;
+                this.elements.paginationControls.classList.remove('hidden');
+                this.elements.paginationControls.innerHTML = `
+                    <button class="btn pagination-btn" data-action="prev" ${currentPage === 1 ? 'disabled' : ''}>上一頁</button>
+                    <span class="page-indicator">第 ${currentPage} / ${totalPages} 頁</span>
+                    <button class="btn pagination-btn" data-action="next" ${currentPage === totalPages ? 'disabled' : ''}>下一頁</button>
+                `;
+            }
+
+            renderMantraAsTable(data, selectedIndex) {
+                this.elements.mantraDisplay.className = 'table-layout-container';
+                if (!Array.isArray(data) || data.length === 0) {
+                    this.elements.mantraDisplay.innerHTML = `<p style="text-align:center; padding: 2rem;">此頁無資料</p>`;
+                    return;
+                }
+
+                let rowHtml = data.map((item, index) => {
+                    const pinyinGroups = item.pinyin ? item.pinyin.split(', ') : [];
+                    let pinyinGroupIdx = 0;
+
+                    const cellsHTML = (item.columns || []).map(chunk => {
+                        if (!chunk || chunk.trim() === '') {
+                            return `<td></td>`;
+                        }
+
+                        // Strip HTML tags for character processing
+                        const cleanChunk = chunk.replace(/<[^>]+>/g, '');
+                        const pinyinGroup = pinyinGroups[pinyinGroupIdx] || '';
+                        pinyinGroupIdx++;
+                        
+                        const chars = [...cleanChunk];
+                        const pinyins = pinyinGroup.split(' ');
+
+                        let content = '';
+                        for (let i = 0; i < chars.length; i++) {
+                            const char = chars[i];
+                            const pinyin = pinyins[i] || '&nbsp;';
+                            content += `<div class="mantra-char-group"><span class="pinyin">${pinyin}</span><span class="chinese-char">${char}</span></div>`;
+                        }
+                        
+                        // Re-apply original HTML tags around the new content
+                        const finalContent = chunk.replace(cleanChunk, content);
+
+                        return `<td>${finalContent}</td>`;
+                    }).join('');
+                    
+                    return `<tr class="${index === selectedIndex ? 'selected' : ''}" data-index="${index}">
+                                <td class="line-number">${item.lineNumber}</td>
+                                ${cellsHTML}
+                            </tr>`;
+                }).join('');
+
+                this.elements.mantraDisplay.innerHTML += `
+                    <div class="brace-wrapper">
+                        ${Array(5).fill('<div class="brace"></div>').join('')}
+                    </div>
+                    <div class="table-rows-wrapper">
+                        <table class="mantra-table"><tbody>${rowHtml}</tbody></table>
+                    </div>`;
+
+                requestAnimationFrame(() => this.updateBracePositions());
+            }
+
+            renderMantraAsGrid(data, selectedIndex) {
+                this.elements.mantraDisplay.className = 'mantra-display-grid';
+                this.elements.mantraDisplay.innerHTML += data
+                    .map((item, index) => {
+                        const cleanText = item.columns.join('').replace(/<[^>]+>/g, '');
+                        const chars = [...cleanText];
+                        const pinyins = item.pinyin.replace(/, /g, ' ').split(' ');
+
+                        let content = '';
+                        for (let i = 0; i < chars.length; i++) {
+                            const char = chars[i];
+                            const pinyin = pinyins[i] || '&nbsp;';
+                            content += `<div class="mantra-char-group"><span class="pinyin">${pinyin}</span><span class="chinese-char">${char}</span></div>`;
+                        }
+
+                        return `<div class="mantra-sentence-grid ${index === selectedIndex ? 'selected' : ''}" data-index="${index}">
+                                    ${content}
+                                </div>`
+                    })
+                    .join('');
+            }
+            
+            updateBracePositions() {
+                const container = this.elements.mantraDisplay;
+                const braces = container.querySelectorAll('.brace');
+                const rows = container.querySelectorAll('.mantra-table tr');
+                
+                braces.forEach(b => b.style.display = 'none');
+                if (rows.length === 0) return;
+
+                const applyBrace = (braceIndex, startRow, endRow, left = '0px', width = '20px') => {
+                    const braceEl = braces[braceIndex];
+                    if (!braceEl || !startRow || !endRow || braceIndex >= braces.length) return;
+                    const top = startRow.offsetTop + 5; // Adjust for better alignment
+                    const bottom = endRow.offsetTop + endRow.offsetHeight - 5;
+                    braceEl.style.display = 'block';
+                    braceEl.style.top = `${top}px`;
+                    braceEl.style.height = `${bottom - top}px`;
+                    braceEl.style.left = left;
+                    braceEl.style.width = width;
+                };
+                
+                const assemblyId = this.state.currentAssemblyId;
+                const pageIndex = this.state.currentPageIndex;
+                
+                applyBrace(0, rows[0], rows[rows.length - 1]);
+
+                if (assemblyId === 'assembly2' && pageIndex === 0) {
+                    applyBrace(1, rows[1], rows[6], '5px', '15px');
+                } else if (assemblyId === 'assembly3') {
+                    if (pageIndex === 1) applyBrace(1, rows[6], rows[9], '5px', '15px');
+                    if (pageIndex === 2) applyBrace(1, rows[2], rows[3], '5px', '15px');
+                    if (pageIndex === 3) applyBrace(1, rows[0], rows[5], '5px', '15px');
+                    if (pageIndex === 4) applyBrace(1, rows[3], rows[9], '5px', '15px');
+                }
+            }
+
+            loadVolumeSettings() {
+                const templateVol = localStorage.getItem('templateVolume') || 1;
+                const micVol = localStorage.getItem('micVolume') || 1;
+                this.elements.templateVolume.value = templateVol;
+                this.elements.micVolume.value = micVol;
+                this.updateVolumeSliderStyle(this.elements.templateVolume);
+                this.updateVolumeSliderStyle(this.elements.micVolume);
+            }
+
+            updateVolumeSliderStyle(slider) {
+                const value = (slider.value - slider.min) / (slider.max - slider.min) * 100;
+                slider.style.backgroundSize = `${value}% 100%`;
+                if (slider.id === 'templateVolume') {
+                    localStorage.setItem('templateVolume', slider.value);
+                    this.elements.standardAudioPlayer.volume = slider.value;
+                } else if (slider.id === 'micVolume') {
+                    localStorage.setItem('micVolume', slider.value);
+                    this.elements.userAudioPlayer.volume = slider.value;
+                }
+            }
+
+            handleMantraClick(index) {
+                this.state.currentLineIndex = index;
+                
+                const { currentAssemblyId, currentPageIndex, learningMode } = this.state;
+                let assemblyData = fullMantraData[currentAssemblyId];
+                const isPaginated = Array.isArray(assemblyData[0]);
+                let pageData = isPaginated ? assemblyData[currentPageIndex] : assemblyData;
+                
+                const currentData = pageData?.[index];
+                if (!currentData) return;
+
+                this.state.lastSelectedAudioSrc = currentData.audioSrc;
+                this.elements.playOverlayBtn.disabled = !this.state.userAudioBlob;
+                
+                if (learningMode === 'default') {
+                    this.renderMantraView(); // Re-render to show selection
+                    this.playAudio(currentData.audioSrc);
+                } else {
+                    this.renderMantraView(); 
+                }
+            }
+
+            async playAudio(src) {
+                if (!src) {
+                    console.warn("No audio source provided.");
+                    return;
+                }
+                try {
+                    this.elements.standardAudioPlayer.src = src;
+                    await this.elements.standardAudioPlayer.play();
+                } catch (e) {
+                    console.error("Audio playback error:", e);
+                    alert(`無法播放音檔: ${e.message}`);
+                }
+            }
+
+            async toggleGlobalRecording() {
+                if (this.state.isRecording) {
+                    this.stopGlobalRecording();
+                } else {
+                    await this.startGlobalRecording();
+                }
+            }
+
+            async startGlobalRecording() {
+                try {
+                    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                    this.state.stream = stream;
+                    const recorder = new MediaRecorder(stream);
+                    this.state.mediaRecorder = recorder;
+                    
+                    this.state.isRecording = true;
+                    this.elements.recordBtn.classList.add('recording');
+                    this.elements.playMyRecBtn.disabled = true;
+                    this.elements.playOverlayBtn.disabled = true;
+                    
+                    let audioChunks = [];
+                    recorder.ondataavailable = event => audioChunks.push(event.data);
+                    recorder.onstop = () => {
+                        this.state.userAudioBlob = new Blob(audioChunks, { type: "audio/webm" });
+                        this.elements.playMyRecBtn.disabled = false;
+                        if (this.state.lastSelectedAudioSrc) {
+                            this.elements.playOverlayBtn.disabled = false;
+                        }
+                        this.updateRecorderStatus();
+                    };
+                    recorder.start();
+                    return true;
+                } catch (error) {
+                    alert("無法啟動麥克風，請檢查瀏覽器權限設定。");
+                    this.stopGlobalRecording();
+                    return false;
+                }
+            }
+
+            stopGlobalRecording() {
+                if (this.state.mediaRecorder && this.state.mediaRecorder.state === "recording") {
+                    this.state.mediaRecorder.stop();
+                }
+                if (this.state.stream) {
+                    this.state.stream.getTracks().forEach(track => track.stop());
+                    this.state.stream = null;
+                }
+                this.state.isRecording = false;
+                this.elements.recordBtn.classList.remove('recording');
+                this.updateRecorderStatus();
+            }
+
+            playUserRecording() {
+                if (this.state.userAudioBlob) {
+                    const audioUrl = URL.createObjectURL(this.state.userAudioBlob);
+                    this.elements.userAudioPlayer.src = audioUrl;
+                    this.elements.userAudioPlayer.volume = this.elements.micVolume.value;
+                    this.elements.userAudioPlayer.play();
+                }
+            }
+
+            playOverlay() {
+                if (!this.state.userAudioBlob || !this.state.lastSelectedAudioSrc) return;
+                
+                const recorder = this.elements.floatingRecorder;
+                if (recorder.classList.contains('collapsed')) {
+                    this.toggleRecorderCollapse();
+                }
+                
+                this.elements.volumeControls.classList.add('visible');
+
+                this.elements.standardAudioPlayer.pause();
+                this.elements.userAudioPlayer.pause();
+
+                this.elements.standardAudioPlayer.volume = this.elements.templateVolume.value;
+                this.elements.userAudioPlayer.volume = this.elements.micVolume.value;
+                
+                const userAudioUrl = URL.createObjectURL(this.state.userAudioBlob);
+                this.elements.userAudioPlayer.src = userAudioUrl;
+                this.elements.standardAudioPlayer.src = this.state.lastSelectedAudioSrc;
+                
+                this.elements.userAudioPlayer.play();
+                this.elements.standardAudioPlayer.play();
+            }
+
+            loadPinyinVisibility() {
+                const isHidden = localStorage.getItem('pinyinHidden') === 'true';
+                if (isHidden) {
+                    document.body.classList.add('pinyin-hidden');
+                    this.elements.togglePinyinBtn.textContent = '顯示拼音';
+                } else {
+                    document.body.classList.remove('pinyin-hidden');
+                    this.elements.togglePinyinBtn.textContent = '隱藏拼音';
+                }
+            }
+
+            togglePinyin() {
+                const isHidden = document.body.classList.toggle('pinyin-hidden');
+                localStorage.setItem('pinyinHidden', isHidden);
+                this.elements.togglePinyinBtn.textContent = isHidden ? '顯示拼音' : '隱藏拼音';
+            }
+
+            initFloatingRecorder() {
+                const recorder = this.elements.floatingRecorder;
+                const header = this.elements.recorderHeader;
+                let isDragging = false;
+                let startX, startY, startLeft, startTop;
+
+                const savedPosition = this.loadRecorderPosition();
+                if (savedPosition) {
+                    recorder.style.left = savedPosition.left + 'px';
+                    recorder.style.top = savedPosition.top + 'px';
+                    recorder.style.right = 'auto';
+                }
+
+                const isCollapsed = localStorage.getItem('recorderCollapsed') === 'true';
+                if (isCollapsed) {
+                    recorder.classList.add('collapsed');
+                    this.updateToggleIcon(true);
+                }
+
+                header.addEventListener('mousedown', (e) => {
+                    isDragging = true;
+                    recorder.classList.add('dragging');
+                    startX = e.clientX;
+                    startY = e.clientY;
+                    const rect = recorder.getBoundingClientRect();
+                    startLeft = rect.left;
+                    startTop = rect.top;
+                    document.addEventListener('mousemove', handleMouseMove);
+                    document.addEventListener('mouseup', handleMouseUp);
+                    e.preventDefault();
+                });
+
+                const handleMouseMove = (e) => {
+                    if (!isDragging) return;
+                    const deltaX = e.clientX - startX;
+                    const deltaY = e.clientY - startY;
+                    let newLeft = startLeft + deltaX;
+                    let newTop = startTop + deltaY;
+                    const maxLeft = window.innerWidth - recorder.offsetWidth;
+                    const maxTop = window.innerHeight - recorder.offsetHeight;
+                    newLeft = Math.max(0, Math.min(newLeft, maxLeft));
+                    newTop = Math.max(0, Math.min(newTop, maxTop));
+                    recorder.style.left = newLeft + 'px';
+                    recorder.style.top = newTop + 'px';
+                    recorder.style.right = 'auto';
+                };
+
+                const handleMouseUp = () => {
+                    if (isDragging) {
+                        isDragging = false;
+                        recorder.classList.remove('dragging');
+                        this.saveRecorderPosition({
+                            left: parseInt(recorder.style.left),
+                            top: parseInt(recorder.style.top)
+                        });
+                        document.removeEventListener('mousemove', handleMouseMove);
+                        document.removeEventListener('mouseup', handleMouseUp);
+                    }
+                };
+
+                header.addEventListener('touchstart', (e) => {
+                    const touch = e.touches[0];
+                    isDragging = true;
+                    recorder.classList.add('dragging');
+                    startX = touch.clientX;
+                    startY = touch.clientY;
+                    const rect = recorder.getBoundingClientRect();
+                    startLeft = rect.left;
+                    startTop = rect.top;
+                    e.preventDefault();
+                });
+
+                header.addEventListener('touchmove', (e) => {
+                    if (!isDragging) return;
+                    const touch = e.touches[0];
+                    const deltaX = touch.clientX - startX;
+                    const deltaY = touch.clientY - startY;
+                    let newLeft = startLeft + deltaX;
+                    let newTop = startTop + deltaY;
+                    const maxLeft = window.innerWidth - recorder.offsetWidth;
+                    const maxTop = window.innerHeight - recorder.offsetHeight;
+                    newLeft = Math.max(0, Math.min(newLeft, maxLeft));
+                    newTop = Math.max(0, Math.min(newTop, maxTop));
+                    recorder.style.left = newLeft + 'px';
+                    recorder.style.top = newTop + 'px';
+                    recorder.style.right = 'auto';
+                    e.preventDefault();
+                });
+
+                header.addEventListener('touchend', () => {
+                    if (isDragging) {
+                        isDragging = false;
+                        recorder.classList.remove('dragging');
+                        this.saveRecorderPosition({
+                            left: parseInt(recorder.style.left),
+                            top: parseInt(recorder.style.top)
+                        });
+                    }
+                });
+            }
+
+            toggleRecorderCollapse() {
+                const recorder = this.elements.floatingRecorder;
+                const isCollapsed = recorder.classList.toggle('collapsed');
+                localStorage.setItem('recorderCollapsed', isCollapsed);
+                this.updateToggleIcon(isCollapsed);
+            }
+
+            updateToggleIcon(isCollapsed) {
+                this.elements.recorderToggle.setAttribute('aria-expanded', !isCollapsed);
+                this.elements.recorderToggle.title = isCollapsed ? '展開' : '收合';
+            }
+
+            saveRecorderPosition(position) {
+                localStorage.setItem('recorderPosition', JSON.stringify(position));
+            }
+
+            loadRecorderPosition() {
+                const saved = localStorage.getItem('recorderPosition');
+                return saved ? JSON.parse(saved) : null;
+            }
+
+            updateRecorderStatus() {
+                const recorder = this.elements.floatingRecorder;
+                if (this.state.userAudioBlob) {
+                    recorder.classList.add('has-recording');
+                } else {
+                    recorder.classList.remove('has-recording');
+                }
+            }
+        }
+
+        class PuzzleMode {
+            constructor(app) {
+                this.app = app;
+                this.pieces = [];
+                this.originalMantraData = null;
+                this.name = "拼圖";
+            }
+
+            renderPuzzle(mantraData) {
+                this.originalMantraData = mantraData;
+                const container = this.app.elements.mantraDisplay;
+                const fullText = mantraData.columns.filter(Boolean).join('');
+                
+                container.innerHTML = `
+                    <div id="puzzleContainer" class="puzzle-container">
+                        <h3>請將下方的詞組拖曳到目標區，拼出完整句子：</h3>
+                        <p style="color: var(--text-light); font-style: italic;">${mantraData.pinyin}</p>
+                        <div class="puzzle-target" aria-label="拼圖目標區"></div>
+                        <div class="puzzle-pieces" aria-label="可拖曳的詞組"></div>
+                        <button class="overlay-text-btn" id="resetPuzzleBtn">重置拼圖</button>
+                    </div>
+                `;
+                const piecesContainer = container.querySelector('.puzzle-pieces');
+                const targetContainer = container.querySelector('.puzzle-target');
+                const resetBtn = container.querySelector('#resetPuzzleBtn');
+
+                this.pieces = mantraData.columns.filter(Boolean).map(p => p.replace(/<[^>]+>/g, ''));
+                
+                const shuffledPieces = [...this.pieces].sort(() => Math.random() - 0.5);
+                
+                piecesContainer.innerHTML = shuffledPieces.map((text, i) => `
+                    <div class="puzzle-piece" draggable="true" data-text="${text}">${text}</div>
+                `).join('');
+
+                piecesContainer.addEventListener('dragstart', e => {
+                    const piece = e.target.closest('.puzzle-piece');
+                    if (piece) e.dataTransfer.setData('text/plain', piece.dataset.text);
+                });
+
+                targetContainer.addEventListener('dragover', e => e.preventDefault());
+                targetContainer.addEventListener('drop', e => {
+                    e.preventDefault();
+                    const text = e.dataTransfer.getData('text/plain');
+                    const piece = piecesContainer.querySelector(`[data-text="${text}"]`);
+                    if (piece) {
+                        targetContainer.appendChild(piece);
+                        this.checkPuzzleCompletion(fullText);
+                    }
+                });
+
+                resetBtn.addEventListener('click', () => this.renderPuzzle(mantraData));
+            }
+
+            checkPuzzleCompletion(correctText) {
+                const target = this.app.elements.mantraDisplay.querySelector('.puzzle-target');
+                const currentOrder = Array.from(target.children).map(el => el.dataset.text).join('');
+                if (currentOrder === this.pieces.join('')) {
+                    target.style.borderColor = 'var(--excellent-color)';
+                    setTimeout(() => alert('拼圖完成！太棒了！'), 100);
+                }
+            }
+        }
+
+        class QuizMode {
+            constructor(app) {
+                this.app = app;
+                this.currentQuestion = null;
+                this.correctAnswer = null;
+                this.name = "問答";
+            }
+
+            renderQuiz(mantraPageData) {
+                if (!mantraPageData || !Array.isArray(mantraPageData) || mantraPageData.length === 0) {
+                    this.app.elements.mantraDisplay.innerHTML = '<p>此頁面沒有足夠的資料來進行問答模式。</p>';
+                    return;
+                }
+
+                const container = this.app.elements.mantraDisplay;
+                container.innerHTML = `
+                    <div id="quizContainer" class="quiz-container">
+                        <h3>填空題：下面句子的空格中應該填入哪個詞組？</h3>
+                        <p class="quiz-question"></p>
+                        <div class="quiz-options"></div>
+                        <button class="overlay-text-btn" id="nextQuizBtn">下一題</button>
+                    </div>
+                `;
+                
+                const questionEl = container.querySelector('.quiz-question');
+                const optionsEl = container.querySelector('.quiz-options');
+                const nextBtn = container.querySelector('#nextQuizBtn');
+
+                const validQuestions = mantraPageData.filter(item => item.columns.filter(Boolean).length > 1);
+                if (validQuestions.length === 0) {
+                     container.innerHTML = '<p>此頁面沒有足夠的資料來進行問答模式。</p>';
+                    return;
+                }
+
+                const randomIndex = Math.floor(Math.random() * validQuestions.length);
+                this.currentQuestion = validQuestions[randomIndex];
+                
+                const words = this.currentQuestion.columns
+                    .map(text => text.replace(/<[^>]+>/g, ''))
+                    .filter(Boolean);
+                    
+                const hiddenIndex = Math.floor(Math.random() * words.length);
+                this.correctAnswer = words[hiddenIndex];
+                words[hiddenIndex] = '<span style="color: var(--primary-color); font-weight: bold;">____</span>';
+                
+                questionEl.innerHTML = words.join(' ');
+
+                const options = [
+                    this.correctAnswer,
+                    ...this.getRandomOptions(mantraPageData, this.correctAnswer)
+                ].sort(() => Math.random() - 0.5);
+
+                optionsEl.innerHTML = options.map(opt => 
+                    `<button class="quiz-option overlay-text-btn" data-answer="${opt}">${opt}</button>`
+                ).join('');
+
+                optionsEl.addEventListener('click', (e) => {
+                    const btn = e.target.closest('.quiz-option');
+                    if (btn) {
+                        this.checkAnswer(btn.dataset.answer, this.correctAnswer);
+                    }
+                });
+
+                nextBtn.addEventListener('click', () => this.renderQuiz(mantraPageData));
+            }
+
+            getRandomOptions(mantraData, correct) {
+                try {
+                    const allWords = mantraData.flatMap(item => 
+                        (item.columns || [])
+                            .filter(Boolean)
+                            .map(text => text.replace(/<[^>]+>/g, ''))
+                            .filter(text => text.trim().length > 0)
+                    );
+                    const uniqueWords = [...new Set(allWords)];
+                    const filteredWords = uniqueWords.filter(word => word !== correct);
+                    
+                    if (filteredWords.length < 3) {
+                        return ['選項1', '選項2', '選項3'].filter(opt => opt !== correct);
+                    }
+                    
+                    return filteredWords.sort(() => Math.random() - 0.5).slice(0, 3);
+                } catch (error) {
+                    console.error('生成選項時發生錯誤:', error);
+                    return ['選項1', '選項2', '選項3'].filter(opt => opt !== correct);
+                }
+            }
+
+            checkAnswer(selected, correct) {
+                if (!selected || !correct) {
+                    console.error('檢查答案時發生錯誤：缺少必要參數');
+                    return;
+                }
+                
+                const buttons = this.app.elements.mantraDisplay.querySelectorAll('.quiz-option');
+                buttons.forEach(btn => {
+                    btn.disabled = true;
+                    if (btn.dataset.answer === correct) {
+                        btn.style.backgroundColor = 'var(--excellent-color)';
+                        btn.style.color = 'white';
+                    } else if (btn.dataset.answer === selected && selected !== correct) {
+                        btn.style.backgroundColor = 'var(--bad-color)';
+                        btn.style.color = 'white';
+                    }
+                });
+
+                if (selected === correct) {
+                    alert('正確！');
+                } else {
+                    alert(`錯誤，正確答案是：${correct}`);
+                }
+            }
+        }
+
+        const app = new LengyanApp();
+        window.addEventListener('DOMContentLoaded', () => app.init());
+        
+        window.addEventListener('resize', () => {
+            const recorder = document.getElementById('floatingRecorder');
+            if (recorder && recorder.style.left) {
+                const rect = recorder.getBoundingClientRect();
+                const maxLeft = window.innerWidth - recorder.offsetWidth;
+                const maxTop = window.innerHeight - recorder.offsetHeight;
+                
+                if (rect.left > maxLeft) {
+                    recorder.style.left = maxLeft + 'px';
+                }
+                if (rect.top > maxTop) {
+                    recorder.style.top = maxTop + 'px';
+                }
+            }
+        });
+
+        function analyzeColumns() {
+            const analysisResult = {};
+            for (let i = 1; i <= 5; i++) {
+                const assemblyId = `assembly${i}`;
+                const assemblyData = fullMantraData[assemblyId];
+                if (assemblyData) {
+                    analysisResult[assemblyId] = {};
+                    assemblyData.forEach((page, pageIndex) => {
+                        analysisResult[assemblyId][`Page ${pageIndex + 1}`] = {};
+                        page.forEach(line => {
+                            analysisResult[assemblyId][`Page ${pageIndex + 1}`][`Line ${line.lineNumber}`] = line.columns.length;
+                        });
+                    });
+                }
+            }
+            console.log("欄位數量分析結果:", analysisResult);
+        }
+        analyzeColumns();
+    </script>
+</body></html>

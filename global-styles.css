@@ -1,0 +1,537 @@
+/**
+ * ═══════════════════════════════════════════════════════════════
+ * 檔案名稱：global-styles.css
+ * 功能說明：楞嚴咒修行道場 - 全域統一樣式
+ * 用途：確保所有頁面的視覺風格一致
+ * 最後更新：2025-12-01
+ * ═══════════════════════════════════════════════════════════════
+ */
+
+/* ═══════════════════════════════════════════════════════════════
+   CSS 自定義屬性（全域變數）
+   用途：統一管理色彩、字體、間距等設計系統
+   ═══════════════════════════════════════════════════════════════ */
+:root {
+    /* 主色調 */
+    --primary-color: #003775;
+    /* 瑠璃色 */
+    --secondary-color: #83CCD2;
+    /* 白群色/淺蔥色 */
+    --accent-color: #F8B400;
+    /* 山吹色 */
+
+    /* 功能色系 */
+    --success-color: #5DAC81;
+    /* 若竹色 */
+    --warning-color: #F8B400;
+    /* 山吹色 */
+    --danger-color: #EB6101;
+    /* 朱色 */
+    --info-color: #38A1DB;
+    /* 露草色 */
+
+    /* 背景與文字 */
+    --light-bg: #F2E8DC;
+    /* 白橡色 */
+    --white-bg: #FFFFFB;
+    /* 胡粉色 */
+    --text-dark: #2D1810;
+    /* 深褐色 */
+    --text-light: #5C3A28;
+    /* 淺褐色 */
+    --border-color: rgba(0, 55, 117, 0.2);
+    /* 邊框顏色 */
+
+    /* 效果 */
+    --radius: 12px;
+    /* 圓角半徑 */
+    --radius-sm: 8px;
+    /* 小圓角 */
+    --radius-lg: 16px;
+    /* 大圓角 */
+    --shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    /* 陰影效果 */
+    --shadow-sm: 0 2px 6px rgba(0, 0, 0, 0.08);
+    /* 小陰影 */
+    --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.15);
+    /* 大陰影 */
+    --transition: all 0.3s ease;
+    /* 過渡動畫 */
+
+    /* 間距系統 */
+    --spacing-xs: 0.25rem;
+    /* 4px */
+    --spacing-sm: 0.5rem;
+    /* 8px */
+    --spacing-md: 1rem;
+    /* 16px */
+    --spacing-lg: 1.5rem;
+    /* 24px */
+    --spacing-xl: 2rem;
+    /* 32px */
+    --spacing-2xl: 3rem;
+    /* 48px */
+
+    /* 字體大小 */
+    --font-xs: 0.75rem;
+    /* 12px */
+    --font-sm: 0.875rem;
+    /* 14px */
+    --font-md: 1rem;
+    /* 16px */
+    --font-lg: 1.125rem;
+    /* 18px */
+    --font-xl: 1.25rem;
+    /* 20px */
+    --font-2xl: 1.5rem;
+    /* 24px */
+    --font-3xl: 1.875rem;
+    /* 30px */
+    --font-4xl: 2.25rem;
+    /* 36px */
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   全域導航欄
+   ═══════════════════════════════════════════════════════════════ */
+.global-nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    box-shadow: var(--shadow-sm);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.nav-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: var(--spacing-md) var(--spacing-lg);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--spacing-lg);
+}
+
+.nav-logo {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    text-decoration: none;
+    color: var(--primary-color);
+    font-weight: 700;
+    font-size: var(--font-xl);
+    transition: var(--transition);
+}
+
+.nav-logo:hover {
+    transform: scale(1.05);
+}
+
+.logo-icon {
+    font-size: var(--font-2xl);
+}
+
+.nav-links {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    flex: 1;
+    justify-content: center;
+}
+
+.nav-link {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    padding: var(--spacing-sm) var(--spacing-md);
+    border-radius: var(--radius);
+    text-decoration: none;
+    color: var(--text-dark);
+    font-weight: 600;
+    font-size: var(--font-sm);
+    transition: var(--transition);
+    white-space: nowrap;
+}
+
+.nav-link:hover {
+    background: var(--light-bg);
+    color: var(--primary-color);
+    transform: translateY(-2px);
+}
+
+.nav-link.active {
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+    color: white;
+}
+
+.nav-icon {
+    font-size: var(--font-lg);
+}
+
+.nav-user {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+}
+
+.user-merit,
+.user-level {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    padding: var(--spacing-xs) var(--spacing-md);
+    background: var(--light-bg);
+    border-radius: var(--radius);
+    font-weight: 600;
+    font-size: var(--font-sm);
+    color: var(--text-dark);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   獎勵通知
+   ═══════════════════════════════════════════════════════════════ */
+.reward-notification {
+    position: fixed;
+    top: 80px;
+    right: 20px;
+    z-index: 2000;
+    background: white;
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-lg);
+    box-shadow: var(--shadow-lg);
+    min-width: 300px;
+    transform: translateX(400px);
+    opacity: 0;
+    transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+.reward-notification.show {
+    transform: translateX(0);
+    opacity: 1;
+}
+
+.reward-notification.success {
+    border-left: 4px solid var(--success-color);
+}
+
+.reward-notification.level-up {
+    border-left: 4px solid var(--accent-color);
+    background: linear-gradient(135deg, #fff9e6 0%, #fff3cd 100%);
+}
+
+.reward-notification.achievement {
+    border-left: 4px solid var(--primary-color);
+}
+
+.reward-notification.warning {
+    border-left: 4px solid var(--warning-color);
+}
+
+.reward-notification.error {
+    border-left: 4px solid var(--danger-color);
+}
+
+.reward-icon {
+    font-size: var(--font-4xl);
+    text-align: center;
+    margin-bottom: var(--spacing-sm);
+}
+
+.reward-message {
+    font-size: var(--font-lg);
+    font-weight: 600;
+    color: var(--text-dark);
+    text-align: center;
+    margin-bottom: var(--spacing-sm);
+}
+
+.reward-item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-xs);
+    padding: var(--spacing-xs) var(--spacing-sm);
+    background: var(--light-bg);
+    border-radius: var(--radius-sm);
+    margin: var(--spacing-xs) 0;
+    font-weight: 600;
+    color: var(--primary-color);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   頁面過渡動畫
+   ═══════════════════════════════════════════════════════════════ */
+.page-transition {
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.page-exit {
+    animation: fadeOut 0.3s ease-in-out;
+}
+
+@keyframes fadeOut {
+    from {
+        opacity: 1;
+    }
+
+    to {
+        opacity: 0;
+    }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   統一的按鈕樣式
+   ═══════════════════════════════════════════════════════════════ */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-xs);
+    padding: var(--spacing-sm) var(--spacing-lg);
+    border-radius: var(--radius);
+    font-weight: 600;
+    font-size: var(--font-md);
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    transition: var(--transition);
+    white-space: nowrap;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+    color: white;
+    box-shadow: var(--shadow-sm);
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow);
+}
+
+.btn-secondary {
+    background: var(--light-bg);
+    color: var(--text-dark);
+    border: 2px solid var(--border-color);
+}
+
+.btn-secondary:hover {
+    background: white;
+    border-color: var(--primary-color);
+    color: var(--primary-color);
+}
+
+.btn-success {
+    background: linear-gradient(135deg, var(--success-color) 0%, #059669 100%);
+    color: white;
+}
+
+.btn-warning {
+    background: linear-gradient(135deg, var(--warning-color) 0%, #ffd54f 100%);
+    color: white;
+}
+
+.btn-danger {
+    background: linear-gradient(135deg, var(--danger-color) 0%, #991b1b 100%);
+    color: white;
+}
+
+.btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none !important;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   統一的卡片樣式
+   ═══════════════════════════════════════════════════════════════ */
+.card {
+    background: var(--white-bg);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-lg);
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border-color);
+    transition: var(--transition);
+}
+
+.card:hover {
+    box-shadow: var(--shadow-lg);
+    transform: translateY(-2px);
+}
+
+.card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: var(--spacing-md);
+    padding-bottom: var(--spacing-md);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.card-title {
+    font-size: var(--font-2xl);
+    font-weight: 700;
+    color: var(--primary-color);
+    margin: 0;
+}
+
+.card-body {
+    color: var(--text-dark);
+    line-height: 1.6;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   響應式設計
+   ═══════════════════════════════════════════════════════════════ */
+@media (max-width: 768px) {
+    .nav-container {
+        flex-wrap: wrap;
+        padding: var(--spacing-sm) var(--spacing-md);
+    }
+
+    .nav-links {
+        order: 3;
+        width: 100%;
+        justify-content: space-around;
+        margin-top: var(--spacing-sm);
+        padding-top: var(--spacing-sm);
+        border-top: 1px solid var(--border-color);
+    }
+
+    .nav-link span:not(.nav-icon) {
+        display: none;
+    }
+
+    .nav-link {
+        padding: var(--spacing-sm);
+    }
+
+    .nav-icon {
+        font-size: var(--font-2xl);
+    }
+
+    .reward-notification {
+        right: 10px;
+        left: 10px;
+        min-width: auto;
+    }
+}
+
+@media (min-width: 769px) and (max-width: 1024px) {
+    .nav-container {
+        max-width: 900px;
+    }
+}
+
+@media (min-width: 1025px) {
+    .nav-container {
+        max-width: 1200px;
+    }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   工具類別
+   ═══════════════════════════════════════════════════════════════ */
+.text-center {
+    text-align: center;
+}
+
+.text-left {
+    text-align: left;
+}
+
+.text-right {
+    text-align: right;
+}
+
+.mt-sm {
+    margin-top: var(--spacing-sm);
+}
+
+.mt-md {
+    margin-top: var(--spacing-md);
+}
+
+.mt-lg {
+    margin-top: var(--spacing-lg);
+}
+
+.mb-sm {
+    margin-bottom: var(--spacing-sm);
+}
+
+.mb-md {
+    margin-bottom: var(--spacing-md);
+}
+
+.mb-lg {
+    margin-bottom: var(--spacing-lg);
+}
+
+.p-sm {
+    padding: var(--spacing-sm);
+}
+
+.p-md {
+    padding: var(--spacing-md);
+}
+
+.p-lg {
+    padding: var(--spacing-lg);
+}
+
+.hidden {
+    display: none !important;
+}
+
+.visible {
+    display: block !important;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   載入動畫
+   ═══════════════════════════════════════════════════════════════ */
+.loading-spinner {
+    display: inline-block;
+    width: 40px;
+    height: 40px;
+    border: 4px solid var(--light-bg);
+    border-top-color: var(--primary-color);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255, 255, 255, 0.9);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+}

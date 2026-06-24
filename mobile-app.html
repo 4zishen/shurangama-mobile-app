@@ -1,0 +1,667 @@
+<!--
+═══════════════════════════════════════════════════════════════
+  檔案名稱：mobile-app.html
+  功能說明：楞嚴咒修行平台 — 手機 App 版本（SPA）
+  包含功能：入口故事、修行道場、經文練習、記憶挑戰、緣起故事、排行榜
+  最後更新：2025-12-01
+═══════════════════════════════════════════════════════════════
+-->
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="theme-color" content="#003775">
+    <meta name="description" content="楞嚴咒背誦學習平台 — 手機版。透過遊戲化方式學習楞嚴咒，2620字・427句。">
+    <title>楞嚴咒修行 — 手機版</title>
+
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🪷</text></svg>">
+    <link rel="apple-touch-icon" href="icons/zen_home.png">
+    <link rel="stylesheet" href="mobile-app.css">
+</head>
+<body>
+<div class="mobile-app" id="mobileApp">
+
+    <!-- ==================== 頂部狀態列 ==================== -->
+    <header class="app-header" id="appHeader">
+        <div class="header-logo">
+            <span class="logo-icon">🪷</span>
+            <span>楞嚴咒修行</span>
+        </div>
+        <div class="header-stats">
+            <div class="stat-badge" id="meritBadge">
+                <span>☸</span>
+                <span id="meritCount">0</span>
+            </div>
+            <div class="stat-badge" id="levelBadge">
+                <span>⭐</span>
+                <span id="levelText">Lv.1</span>
+            </div>
+            <img class="header-avatar" id="headerAvatar" src="avatars/mobile/1praying_monk.png" alt="頭像" onclick="MobileApp.showProfile()">
+        </div>
+    </header>
+
+    <!-- ==================== 主內容區 ==================== -->
+    <main class="app-content" id="appContent">
+
+        <!-- ========== 道場主頁 ========== -->
+        <div class="view active" id="view-home" data-view="home">
+            <!-- 歡迎橫幅 -->
+            <div class="dash-hero">
+                <div class="dash-hero-title" id="dashGreeting">歡迎回來，修行者</div>
+                <div class="dash-hero-subtitle">2620字・427句版本 ｜ 佛門課誦本</div>
+            </div>
+
+            <!-- 修行進度環 -->
+            <div class="dash-progress-ring">
+                <svg class="progress-ring-svg" viewBox="0 0 140 140">
+                    <defs>
+                        <linearGradient id="progressGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                            <stop offset="0%" style="stop-color:#003775"/>
+                            <stop offset="100%" style="stop-color:#83CCD2"/>
+                        </linearGradient>
+                    </defs>
+                    <circle class="progress-ring-bg" cx="70" cy="70" r="60"/>
+                    <circle class="progress-ring-fill" id="progressRing" cx="70" cy="70" r="60"
+                            stroke-dasharray="377" stroke-dashoffset="377"/>
+                </svg>
+                <div class="progress-ring-text">
+                    <div class="progress-ring-percent" id="progressPercent">0%</div>
+                    <div class="progress-ring-label" id="progressLabel">已學會 0/427 句</div>
+                </div>
+            </div>
+
+            <!-- 快捷卡片 -->
+            <div class="dash-quicklinks">
+                <div class="dash-quick-card" onclick="MobileApp.switchTab('practice')">
+                    <span class="quick-card-icon">📖</span>
+                    <div class="quick-card-title">經文練習</div>
+                    <div class="quick-card-desc" id="practiceDesc">繼續學習</div>
+                </div>
+                <div class="dash-quick-card" onclick="MobileApp.switchTab('game')">
+                    <span class="quick-card-icon">🎮</span>
+                    <div class="quick-card-title">記憶挑戰</div>
+                    <div class="quick-card-desc">問答追逐賽</div>
+                </div>
+            </div>
+
+            <!-- 每日打卡 -->
+            <div class="dash-checkin">
+                <div class="checkin-header">
+                    <span class="checkin-title">📅 每日打卡</span>
+                    <span class="checkin-streak" id="streakDisplay">🔥 0 天</span>
+                </div>
+                <div class="checkin-week" id="checkinWeek"></div>
+                <button class="checkin-btn" id="checkinBtn" onclick="MobileApp.dailyCheckin()">
+                    ✨ 今日打卡
+                </button>
+            </div>
+
+            <!-- 今日任務 -->
+            <div class="dash-tasks">
+                <div class="section-title">📋 今日修行任務</div>
+                <div id="taskList">
+                    <div class="task-item">
+                        <div class="task-check" onclick="this.classList.toggle('done'); this.nextElementSibling.classList.toggle('done')">✓</div>
+                        <span class="task-text">完成每日打卡</span>
+                    </div>
+                    <div class="task-item">
+                        <div class="task-check" onclick="this.classList.toggle('done'); this.nextElementSibling.classList.toggle('done')">✓</div>
+                        <span class="task-text">練習一段楞嚴咒</span>
+                    </div>
+                    <div class="task-item">
+                        <div class="task-check" onclick="this.classList.toggle('done'); this.nextElementSibling.classList.toggle('done')">✓</div>
+                        <span class="task-text">完成一次記憶挑戰</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 成就 -->
+            <div class="dash-achievements">
+                <div class="section-title">🏅 修行成就</div>
+                <div class="achievement-scroll" id="achievementScroll">
+                    <div class="achievement-badge">
+                        <div class="badge-icon">🌱</div>
+                        <div class="badge-name">初學者</div>
+                    </div>
+                    <div class="achievement-badge">
+                        <div class="badge-icon locked">🔥</div>
+                        <div class="badge-name">持咒7天</div>
+                    </div>
+                    <div class="achievement-badge">
+                        <div class="badge-icon locked">⭐</div>
+                        <div class="badge-name">第一會</div>
+                    </div>
+                    <div class="achievement-badge">
+                        <div class="badge-icon locked">💎</div>
+                        <div class="badge-name">滿分挑戰</div>
+                    </div>
+                    <div class="achievement-badge">
+                        <div class="badge-icon locked">🏆</div>
+                        <div class="badge-name">全咒通</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ========== 經文練習頁 ========== -->
+        <div class="view" id="view-practice" data-view="practice">
+            <!-- 分會選擇 -->
+            <div class="practice-sections" id="sectionSelector"></div>
+
+            <!-- 模式選擇 -->
+            <div class="practice-modes" id="modeSelector"></div>
+
+            <!-- 拼音切換 -->
+            <div class="pinyin-toggle">
+                <div class="toggle-switch" id="pinyinToggle" onclick="MobileApp.togglePinyin()"></div>
+                <span class="toggle-label">顯示拼音</span>
+            </div>
+
+            <!-- 預設模式：咒語顯示 -->
+            <div id="defaultModeContent">
+                <div class="mantra-display" id="mantraDisplay"></div>
+                <div class="pagination" id="pagination"></div>
+            </div>
+
+            <!-- 拼圖模式 -->
+            <div id="puzzleModeContent" style="display:none;">
+                <div class="puzzle-container">
+                    <div class="puzzle-question">
+                        <div class="puzzle-question-text">請將以下文字排列為正確順序</div>
+                        <div class="puzzle-reference" id="puzzleRef"></div>
+                    </div>
+                    <div class="puzzle-answer-area" id="puzzleAnswer"></div>
+                    <div class="puzzle-pieces" id="puzzlePieces"></div>
+                    <div style="text-align:center; margin-top: var(--space-md);">
+                        <button class="btn-mobile btn-primary-m" onclick="MobileApp.nextPuzzle()">下一題 →</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 問答模式 -->
+            <div id="quizModeContent" style="display:none;">
+                <div class="quiz-container">
+                    <div class="quiz-current">
+                        <div class="quiz-label">目前咒語</div>
+                        <div class="quiz-text" id="quizCurrentText"></div>
+                    </div>
+                    <div class="quiz-label" style="text-align:center; margin-bottom: var(--space-sm);">請選擇下一句：</div>
+                    <div class="quiz-options" id="quizOptions"></div>
+                    <div class="game-feedback" id="quizFeedback" style="display:none;"></div>
+                </div>
+            </div>
+
+            <!-- 錄音浮動按鈕 -->
+            <button class="mobile-recorder-fab" id="recorderFab" onclick="MobileApp.toggleRecorder()" title="錄音">🎙️</button>
+        </div>
+
+        <!-- ========== 記憶挑戰頁 ========== -->
+        <div class="view" id="view-game" data-view="game">
+            <!-- 遊戲模式選擇 -->
+            <div id="gameModeSelect" class="game-mode-select">
+                <div class="section-title">🎮 選擇挑戰模式</div>
+
+                <div class="game-mode-card" onclick="MobileApp.startChaseGame()">
+                    <span class="game-mode-icon">⚔️</span>
+                    <div class="game-mode-title">問答追逐賽</div>
+                    <div class="game-mode-desc">答對前進，答錯後退<br>10次錯誤即挑戰失敗</div>
+                    <div style="margin-top: var(--space-md); font-size:0.8rem; color: var(--accent); font-weight:600;">
+                        入場費: 10 功德 ｜ 獎勵: 15-25 功德
+                    </div>
+                </div>
+
+                <div class="game-mode-card" onclick="MobileApp.switchTab('practice'); MobileApp.setMode('puzzle')">
+                    <span class="game-mode-icon">🧩</span>
+                    <div class="game-mode-title">拼圖重組</div>
+                    <div class="game-mode-desc">將打散的咒語文字<br>排列回正確順序</div>
+                </div>
+
+                <div style="text-align:center; padding: var(--space-md); font-size:0.85rem; color: var(--text-muted);">
+                    目前功德: <strong id="gameMeritDisplay">0</strong> ☸
+                </div>
+            </div>
+
+            <!-- 追逐遊戲進行中 -->
+            <div id="chaseGameArea" class="chase-game" style="display:none;">
+                <div class="section-title">⚔️ 問答追逐賽</div>
+
+                <!-- 分會選擇 -->
+                <div class="practice-sections" style="margin-bottom: var(--space-md);">
+                    <select id="gameSection" class="section-chip" style="padding: 8px 16px; font-family:inherit; border-radius: var(--radius-full); border: 1.5px solid var(--border); background: var(--bg-card);" onchange="MobileApp.resetChaseGame()">
+                        <option value="verses">偈頌</option>
+                        <option value="assembly1" selected>第一會</option>
+                        <option value="assembly2">第二會</option>
+                        <option value="assembly3">第三會</option>
+                        <option value="assembly4">第四會</option>
+                        <option value="assembly5">第五會</option>
+                    </select>
+                </div>
+
+                <!-- 追逐軌道 -->
+                <div class="chase-track">
+                    <div class="chase-character chase-player" id="chasePlayer">🧑‍🦲</div>
+                    <div class="chase-character chase-enemy" id="chaseEnemy">👹</div>
+                    <div class="chase-error-count">❌ <span id="chaseErrors">0</span>/10</div>
+                </div>
+
+                <!-- 當前咒語 -->
+                <div class="game-current-mantra">
+                    <div class="game-current-label">當前咒語</div>
+                    <div class="game-current-text" id="gameCurrentText">—</div>
+                    <button class="btn-mobile btn-secondary-m" style="margin-top: var(--space-sm); min-height:36px; padding:6px 16px; font-size:0.8rem;" onclick="MobileApp.playGameAudio()">🔊 播放</button>
+                </div>
+
+                <!-- 選項 -->
+                <div class="game-options" id="gameOptions"></div>
+
+                <!-- 反饋 -->
+                <div class="game-feedback" id="gameFeedback" style="display:none;"></div>
+
+                <!-- 退出按鈕 -->
+                <div style="text-align:center; margin-top: var(--space-lg);">
+                    <button class="btn-mobile btn-secondary-m" onclick="MobileApp.exitChaseGame()">退出挑戰</button>
+                </div>
+            </div>
+
+            <!-- 遊戲結果 -->
+            <div id="gameResultArea" class="game-result" style="display:none;">
+                <span class="game-result-icon" id="gameResultIcon">🎉</span>
+                <div class="game-result-title" id="gameResultTitle">挑戰完成！</div>
+                <div class="game-result-score" id="gameResultScore"></div>
+                <button class="btn-mobile btn-primary-m btn-full" onclick="MobileApp.exitChaseGame()">返回挑戰列表</button>
+            </div>
+        </div>
+
+        <!-- ========== 緣起故事頁 ========== -->
+        <div class="view" id="view-story" data-view="story">
+            <div class="story-view">
+                <div class="story-header">
+                    <span class="story-header-icon">📖</span>
+                    <div class="story-header-title">楞嚴咒緣起故事</div>
+                </div>
+
+                <div class="story-section">
+                    <div class="story-section-title">【壹】故事背景</div>
+                    <p class="story-text">
+                        在兩千五百多年前的古印度，佛陀住在<strong>室羅筏城</strong>的祇桓精舍。
+                        這座城市繁華富庶，佛陀在此說法度化衆生。當時佛陀身邊有許多弟子，
+                        其中最出名的之一就是<strong>阿難尊者</strong>——佛陀的堂弟，也是佛陀的侍者。
+                    </p>
+                </div>
+
+                <div class="story-section">
+                    <div class="story-section-title">【貳】主要人物</div>
+                    <div class="story-character-cards">
+                        <div class="story-character">
+                            <img src="人物圖檔/1.png" alt="阿難尊者" onerror="this.src='avatars/1praying_monk.png'">
+                            <div class="story-character-name">阿難尊者</div>
+                            <p style="font-size:0.75rem; color:var(--text-muted); margin-top:4px;">佛陀堂弟</p>
+                        </div>
+                        <div class="story-character">
+                            <img src="人物圖檔/2.png" alt="摩登伽女" onerror="this.src='avatars/lotus_flower.png'">
+                            <div class="story-character-name">摩登伽女</div>
+                            <p style="font-size:0.75rem; color:var(--text-muted); margin-top:4px;">首陀羅族少女</p>
+                        </div>
+                    </div>
+                    <p class="story-text">
+                        阿難尊者記憶力超群，能背誦佛陀所說的所有經文，被稱為「多聞第一」。
+                        他是佛法傳承的關鍵人物。
+                    </p>
+                </div>
+
+                <div class="story-section">
+                    <div class="story-section-title">【參】事件起因</div>
+                    <p class="story-text">
+                        有一天，阿難獨自外出乞食化緣。途中，他經過一條溪流，恰好遇見了一位名叫
+                        <strong>摩登伽女</strong>的年輕女子。摩登伽女一見到相貌莊嚴的阿難，便深深被他吸引。
+                    </p>
+                </div>
+
+                <div class="story-section">
+                    <div class="story-section-title">【肆】危機時刻</div>
+                    <p class="story-text">
+                        摩登伽女的母親是一位精通外道咒術的婦人。見女兒對阿難一見鍾情，
+                        便施展了<strong style="color:var(--danger);">先梵天咒</strong>（一種強力的迷惑咒術），
+                        企圖控制阿難的心智。阿難雖然博學多聞，但定力不足，即將被邪咒迷惑，
+                        <strong>清淨戒體即將被毀</strong>！
+                    </p>
+                    <div class="story-highlight">
+                        <strong>🚨 情況危急！</strong> 如果阿難破戒，不僅他個人的修行毀於一旦，
+                        更會影響整個佛法的傳承！
+                    </div>
+                </div>
+
+                <div class="story-section">
+                    <div class="story-section-title">【伍】佛陀救護</div>
+                    <p class="story-text">
+                        在千鈞一髮之際，佛陀以神通力感知到阿難的危險。
+                        佛陀立即從肉髻中放出百寶光明，光中化現出一尊佛，
+                        宣說了這部威力無比的<strong>楞嚴咒</strong>。
+                    </p>
+                    <div class="story-highlight">
+                        <strong>🔮 楞嚴咒的力量：</strong><br>
+                        ・破除一切邪咒邪術<br>
+                        ・護持修行者的清淨心<br>
+                        ・降伏天魔外道<br>
+                        ・增長智慧與定力
+                    </div>
+                    <p class="story-text" style="margin-top: var(--space-md);">
+                        佛陀命文殊師利菩薩持咒前往解救，楞嚴咒的神力瞬間破除了先梵天咒，
+                        阿難恢復了清淨心，免於破戒之災。
+                    </p>
+                </div>
+
+                <div class="story-section">
+                    <div class="story-section-title">【陸】故事結局與意義</div>
+                    <p class="story-text">
+                        阿難被救回後，深感慚愧，跪在佛前痛哭懺悔。他發願要精進修行，
+                        並請求佛陀開示正確的修行方法。佛陀因此開演了《楞嚴經》的教法。
+                    </p>
+                    <div class="story-quote">
+                        「<strong>楞嚴咒</strong>是咒中之王，一切諸佛皆從楞嚴咒出生。
+                        持誦此咒，能護身護心，遠離一切災難。」
+                    </div>
+                    <p class="story-text" style="margin-top: var(--space-md);">
+                        而你，現在也將踏上學習楞嚴咒的旅程。<br>
+                        這不只是背誦，更是一場<strong>心靈的修行</strong>。
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- ========== 排行榜頁 ========== -->
+        <div class="view" id="view-leaderboard" data-view="leaderboard">
+            <div class="leaderboard-header">
+                <span class="lb-icon">🏆</span>
+                <div class="lb-title">功德排行榜</div>
+            </div>
+            <div class="lb-list" id="leaderboardList"></div>
+        </div>
+
+    </main>
+
+    <!-- ==================== 底部導航列 ==================== -->
+    <nav class="bottom-nav" id="bottomNav">
+        <button class="nav-tab active" data-tab="home" onclick="MobileApp.switchTab('home')">
+            <span class="tab-icon">🏠</span>
+            <span>道場</span>
+        </button>
+        <button class="nav-tab" data-tab="practice" onclick="MobileApp.switchTab('practice')">
+            <span class="tab-icon">📖</span>
+            <span>練習</span>
+        </button>
+        <button class="nav-tab" data-tab="game" onclick="MobileApp.switchTab('game')">
+            <span class="tab-icon">🎮</span>
+            <span>挑戰</span>
+        </button>
+        <button class="nav-tab" data-tab="story" onclick="MobileApp.switchTab('story')">
+            <span class="tab-icon">📜</span>
+            <span>故事</span>
+        </button>
+        <button class="nav-tab" data-tab="leaderboard" onclick="MobileApp.switchTab('leaderboard')">
+            <span class="tab-icon">📊</span>
+            <span>排行</span>
+        </button>
+    </nav>
+
+    <!-- ==================== Onboarding 覆蓋層 ==================== -->
+    <div class="onboarding-overlay" id="onboardingOverlay">
+        <!-- 粒子背景 -->
+        <div class="ob-particles" id="obParticles"></div>
+
+        <!-- 跳過按鈕 -->
+        <button class="ob-skip" onclick="MobileApp.skipOnboarding()">暫時跳過 →</button>
+
+        <!-- 進度指示 -->
+        <div class="ob-progress" id="obProgress">
+            <div class="ob-dot active" data-step="0"></div>
+            <div class="ob-dot" data-step="1"></div>
+            <div class="ob-dot" data-step="2"></div>
+            <div class="ob-dot" data-step="3"></div>
+        </div>
+
+        <!-- 場景 0: 歡迎 & 設定 -->
+        <div class="ob-scene active" id="obScene0">
+            <div class="ob-welcome-card">
+                <p class="greeting">歡迎來到〈楞嚴咒〉背誦學習平台</p>
+                <h1 class="main-title">你的修行之旅即將開始</h1>
+            </div>
+
+            <div class="ob-dialogue">
+                <div class="ob-speaker">
+                    <img class="ob-speaker-icon" src="avatars/mobile/護法v2.png" alt="道場守護者" onerror="this.src='avatars/1praying_monk.png'">
+                    <span class="ob-speaker-name">道場守護者</span>
+                </div>
+                <p class="ob-text">
+                    阿彌陀佛，感謝你來到這裡。在開始之前，請告訴我該如何稱呼你？
+                </p>
+                <div style="margin-top: var(--space-lg);">
+                    <input type="text" class="ob-input" id="obUserName" placeholder="請輸入你的法號或暱稱" autocomplete="off">
+                </div>
+                <div style="margin-top: var(--space-lg);">
+                    <p class="ob-avatar-label">請選擇你的法相（頭像）</p>
+                    <div class="ob-avatar-grid" id="obAvatarGrid">
+                        <button class="ob-avatar-btn selected" data-avatar="avatars/mobile/1praying_monk.png" onclick="MobileApp.selectAvatar(this)">
+                            <img src="avatars/mobile/1praying_monk.png" alt="合掌僧侶">
+                        </button>
+                        <button class="ob-avatar-btn" data-avatar="avatars/mobile/meditating.png" onclick="MobileApp.selectAvatar(this)">
+                            <img src="avatars/mobile/meditating.png" alt="打坐修行">
+                        </button>
+                        <button class="ob-avatar-btn" data-avatar="avatars/mobile/dharma_wheel.png" onclick="MobileApp.selectAvatar(this)">
+                            <img src="avatars/mobile/dharma_wheel.png" alt="法輪">
+                        </button>
+                        <button class="ob-avatar-btn" data-avatar="avatars/mobile/mala_beads.png" onclick="MobileApp.selectAvatar(this)">
+                            <img src="avatars/mobile/mala_beads.png" alt="念珠">
+                        </button>
+                        <button class="ob-avatar-btn" data-avatar="avatars/mobile/lotus_flower.png" onclick="MobileApp.selectAvatar(this)">
+                            <img src="avatars/mobile/lotus_flower.png" alt="蓮花">
+                        </button>
+                    </div>
+                </div>
+                <div class="ob-choices" style="margin-top: var(--space-lg);">
+                    <button class="ob-choice-btn primary" onclick="MobileApp.startOnboarding()">
+                        ✨ 開始我的修行之旅
+                    </button>
+                    <button class="ob-choice-btn" onclick="MobileApp.advancedEntry()">
+                        📚 進階入口（跳過故事，直接學習）
+                    </button>
+                </div>
+                <p style="text-align:center; margin-top: var(--space-md); font-size:0.8rem; color: var(--text-muted);">
+                    💡 進階入口適合已熟悉背景故事的修行者
+                </p>
+            </div>
+        </div>
+
+        <!-- 場景 1: 緊急情況 -->
+        <div class="ob-scene" id="obScene1">
+            <div class="ob-emergency">
+                <span class="ob-emergency-icon">⚠️</span>
+                <div style="margin-top: var(--space-md);">
+                    <div class="ob-speaker">
+                        <span style="font-size:2rem;">😰</span>
+                        <span class="ob-speaker-name" id="obSpeaker1">道場弟子</span>
+                    </div>
+                    <p class="ob-text center">
+                        <strong class="ob-highlight" id="obName1"></strong>，不好了！<br>
+                        <span class="ob-danger">阿難尊者遇到危險了！</span>
+                    </p>
+                    <p class="ob-text" style="margin-top: var(--space-md);">
+                        阿難尊者外出化緣時，被摩登伽女的母親用<span class="ob-danger">邪咒困住</span>，
+                        清淨戒體即將被毀！
+                    </p>
+                </div>
+            </div>
+            <div class="ob-choices" style="margin-top: var(--space-md);">
+                <button class="ob-choice-btn primary" onclick="MobileApp.nextOBScene(2)">
+                    💪 我願意幫忙！發生什麼事了？
+                </button>
+                <button class="ob-choice-btn" onclick="MobileApp.nextOBScene(2)">
+                    🤔 阿難尊者是誰？為什麼這麼重要？
+                </button>
+            </div>
+        </div>
+
+        <!-- 場景 2: 佛陀說明 -->
+        <div class="ob-scene" id="obScene2">
+            <div class="ob-dialogue">
+                <div class="ob-speaker">
+                    <img class="ob-speaker-icon" src="avatars/mobile/gaya佛陀(有背景).png" alt="佛陀" onerror="this.style.display='none'">
+                    <span class="ob-speaker-name">佛陀</span>
+                </div>
+                <p class="ob-text">
+                    <strong class="ob-highlight" id="obName2"></strong>，阿難是我的弟子，
+                    他記憶力超群，能背誦所有經文，是佛法傳承的關鍵人物。
+                </p>
+                <p class="ob-text" style="margin-top: var(--space-md);">
+                    此刻，他正被邪咒困住，處境危急。
+                    <span class="ob-highlight">只有楞嚴咒的力量</span>能夠破解這個邪咒。
+                </p>
+                <p class="ob-text center" style="font-size:1.2rem; margin-top: var(--space-xl);">
+                    "但是... <strong class="ob-highlight" id="obName3"></strong>，<br>
+                    <span class="ob-highlight">為什麼我選擇了你？</span>"
+                </p>
+            </div>
+            <div class="ob-choices" style="margin-top: var(--space-md);">
+                <button class="ob-choice-btn primary" onclick="MobileApp.nextOBScene(3)">
+                    為什麼是我？我能做到嗎？
+                </button>
+            </div>
+        </div>
+
+        <!-- 場景 3: 使命揭示 -->
+        <div class="ob-scene" id="obScene3">
+            <div class="ob-mission">
+                <span class="ob-mission-icon">🔮</span>
+                <h2 class="ob-mission-title">你被選中的原因</h2>
+                <p class="ob-mission-desc">
+                    <strong class="ob-highlight" id="obName4"></strong>，我看到了你內心的<span class="ob-highlight">善念</span>與<span class="ob-highlight">決心</span>。
+                    <br><br>
+                    楞嚴咒不只是咒語，它是<span class="ob-highlight">智慧與慈悲的結晶</span>。<br>
+                    只有真心想要幫助他人的人，才能發揮它的真正力量。
+                </p>
+                <p class="ob-mission-desc" style="font-size:1.05rem; margin-top: var(--space-lg);">
+                    這不僅是救援阿難的任務，<br>
+                    更是你<span class="ob-highlight">修行之路的開始</span>。
+                </p>
+            </div>
+            <div class="ob-dialogue" style="margin-top: var(--space-lg);">
+                <p class="ob-text center" style="font-size:1.15rem;">
+                    <strong class="ob-highlight" id="obName5"></strong>，<br>
+                    你願意接受這個使命嗎？
+                </p>
+            </div>
+            <div class="ob-choices" style="margin-top: var(--space-md);">
+                <button class="ob-choice-btn primary" onclick="MobileApp.acceptMission()">
+                    ⚔️ 我接受！請教我楞嚴咒
+                </button>
+                <button class="ob-choice-btn" onclick="MobileApp.showEncouragement()">
+                    😰 我擔心自己做不到...
+                </button>
+            </div>
+        </div>
+
+        <!-- 鼓勵場景 -->
+        <div class="ob-scene" id="obSceneEncourage">
+            <div class="ob-dialogue">
+                <div class="ob-speaker">
+                    <img class="ob-speaker-icon" src="avatars/mobile/gaya佛陀(有背景).png" alt="佛陀" onerror="this.style.display='none'">
+                    <span class="ob-speaker-name">佛陀</span>
+                </div>
+                <p class="ob-text">
+                    <strong class="ob-highlight" id="obName6"></strong>，不要害怕。
+                </p>
+                <p class="ob-text" style="margin-top: var(--space-md);">
+                    <span class="ob-highlight">每個人都是從零開始的</span>。<br>
+                    我會一步步引導你，我們一起學習。
+                </p>
+                <p class="ob-text center" style="font-size:1.15rem; margin-top: var(--space-xl);">
+                    "相信自己，<br>你一定可以的！"
+                </p>
+            </div>
+            <div class="ob-choices" style="margin-top: var(--space-md);">
+                <button class="ob-choice-btn primary" onclick="MobileApp.acceptMission()">
+                    💪 好！我願意試試看
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== Toast 通知 ==================== -->
+    <div class="mobile-toast" id="mobileToast">
+        <span class="toast-icon" id="toastIcon">✨</span>
+        <div class="toast-content">
+            <div class="toast-title" id="toastTitle"></div>
+            <div class="toast-message" id="toastMessage"></div>
+        </div>
+    </div>
+
+    <!-- 蓮花裝飾 -->
+    <div class="lotus-decoration">🪷</div>
+
+    <!-- 音頻播放器 -->
+    <audio id="audioPlayer"></audio>
+</div>
+
+<!-- ==================== 隱藏桌面版注入的 UI ==================== -->
+<style>
+    /* global-nav.js 注入的桌面導航列 — 手機版不需要 */
+    .global-nav { display: none !important; }
+    body { padding-top: 0 !important; }
+    /* user-profile-system.js 的歡迎彈窗 — 手機版用 onboarding 取代 */
+    .user-welcome-modal-overlay { display: none !important; }
+    /* progressive-learning-ui.js 注入的桌面 UI */
+    .progressive-mode-toggle, .progressive-stats-bar { display: none !important; }
+</style>
+
+<!-- ==================== 咒語資料 ==================== -->
+<script src="mantra-data.js"></script>
+
+<!-- ==================== 原站外部 JS 功能模組（完整包含） ==================== -->
+<!-- 載入順序依照依賴關係：基礎 → 引擎 → UI -->
+
+<!-- 1. 基礎：全域資料管理器（自動初始化，localStorage: shurangama_user_data_v2） -->
+<script src="global-data-manager.js"></script>
+
+<!-- 2. 間隔重複引擎（依賴 GlobalDataManager，自動初始化） -->
+<script src="spaced-repetition-engine.js"></script>
+
+<!-- 3. 漸進式學習引擎（依賴 GDM + SRS，需手動實例化） -->
+<script src="progressive-learning-engine.js"></script>
+
+<!-- 4. 難度引擎（依賴 GDM，自動初始化） -->
+<script src="difficulty-engine.js"></script>
+
+<!-- 5. 獎勵通知系統（獨立，自動監聽 levelUp / achievementUnlocked 事件） -->
+<script src="reward-notification.js"></script>
+
+<!-- 6. 用戶個人檔案系統（自動初始化） -->
+<script src="user-profile-system.js"></script>
+
+<!-- 7. 漸進式學習 UI（依賴 GDM + SRS + PLE，自動初始化） -->
+<script src="progressive-learning-ui.js"></script>
+<link rel="stylesheet" href="progressive-learning-styles.css">
+
+<!-- 8. 全域導航（桌面版導航，CSS 已隱藏，保留以確保 navigateWithTransition 等功能可用） -->
+<script src="global-nav.js"></script>
+
+<!-- ==================== App 核心邏輯 ==================== -->
+<script src="mobile-app.js"></script>
+
+
+<!-- ==================== Service Worker 註冊 ==================== -->
+<script>
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js')
+            .then(reg => console.log('[App] SW registered:', reg.scope))
+            .catch(err => console.warn('[App] SW registration failed:', err));
+    });
+}
+</script>
+
+</body>
+</html>

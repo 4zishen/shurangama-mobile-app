@@ -1,0 +1,25 @@
+{
+    "name": "楞嚴咒修行",
+    "short_name": "楞嚴咒",
+    "description": "楞嚴咒背誦學習平台 — 手機版。透過遊戲化方式學習楞嚴咒。",
+    "start_url": "./mobile-app.html",
+    "display": "standalone",
+    "orientation": "portrait",
+    "theme_color": "#003775",
+    "background_color": "#FFF8E7",
+    "lang": "zh-TW",
+    "icons": [
+        {
+            "src": "icons/zen_home.png",
+            "sizes": "192x192",
+            "type": "image/png",
+            "purpose": "any maskable"
+        },
+        {
+            "src": "icons/zen_challenge.png",
+            "sizes": "512x512",
+            "type": "image/png"
+        }
+    ],
+    "categories": ["education", "lifestyle"]
+}
