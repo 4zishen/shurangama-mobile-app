@@ -3,7 +3,7 @@
  * 快取策略：Cache-First for static assets, Network-First for dynamic
  */
 
-const CACHE_NAME = 'shurangama-mobile-v4';
+const CACHE_NAME = 'shurangama-mobile-v5';
 const ASSETS_TO_CACHE = [
     './mobile-app.html',
     './mobile-app.css',
