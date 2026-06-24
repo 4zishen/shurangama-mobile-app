@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>楞嚴咒 - 聆聽與隨身錄音</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>行</text></svg>">
+    <style>
+        :root {
+            --primary-color: #4a76a8;
+            --secondary-color: #50e3c2;
+            --accent-color: #f5a623;
+            --bad-color: #d0021b;
+            --light-bg: #f8f9fa;
+            --text-dark: #212529;
+            --text-light: #6c757d;
+            --border-color: #dee2e6;
+            --white-bg: #ffffff;
+            --excellent-color: #16a34a; /* Green */
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background-color: var(--light-bg);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            color: var(--text-dark);
+        }
+        .main-container {
+            width: 100%;
+            max-width: 1200px;
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+        .learning-section {
+            background: var(--white-bg);
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+            width: 100%;
+        }
+        .app-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        .app-header h1 {
+            font-size: 2.2rem;
+            color: var(--primary-color);
+        }
+        .section-selector { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; justify-content: center; border-bottom: 1px solid var(--border-color); padding-bottom: 20px; }
+        .section-btn { background: #eef1f5; border: 1px solid transparent; border-radius: 25px; color: #555; padding: 10px 20px; font-size: 16px; cursor: pointer; transition: all 0.3s ease; }
+        .section-btn:hover { background: #e0e6ef; }
+        .section-btn.active { background: var(--primary-color); color: white; border-color: var(--primary-color); }
+        .mantra-display-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 15px; padding: 20px 0; }
+        .mantra-sentence-grid { padding: 15px; background: var(--light-bg); border-radius: 10px; cursor: pointer; transition: background-color 0.3s ease; border: 1px solid var(--border-color); text-align: center; }
+        .mantra-sentence-grid:hover { background-color: #eaf2ff; }
+        .mantra-sentence-grid.selected { background-color: #d1e3ff; border-color: var(--primary-color); }
+        .table-layout-container { width: 100%; margin: 20px 0; position: relative; }
+        .brace-wrapper { position: absolute; left: 0; top: 0; bottom: 0; width: 25px; pointer-events: none; }
+        .brace { position: absolute; border: 2px solid var(--primary-color); border-right: none; border-radius: 8px 0 0 8px; }
+        #brace-long { left: 0; width: 20px; }
+        #brace-short { left: 5px; width: 15px; }
+        .table-rows-wrapper { padding-left: 30px; }
+        .mantra-table { width: 100%; border-collapse: collapse; }
+        .mantra-table tr { cursor: pointer; transition: background-color 0.2s; border-bottom: 1px solid #eee; }
+        .mantra-table tr:last-child { border-bottom: none; }
+        .mantra-table tr:hover { background-color: #f7faff; }
+        .mantra-table tr.selected { background-color: #d1e3ff; }
+        .mantra-table td { font-size: 1.1em; line-height: 1.6; white-space: nowrap; padding: 10px 15px; text-align: left; }
+        .mantra-table td.line-number { width: 40px; text-align: center; font-weight: bold; color: var(--text-light); flex-shrink: 0; padding: 10px 5px; }
+        .c-red { color: var(--bad-color); font-weight: bold; }
+        .c-green { color: var(--excellent-color); font-weight: bold; }
+        .c-blue { color: var(--primary-color); font-weight: bold; }
+
+        .floating-recorder {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(0,0,0,0.05);
+            border-radius: 50px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+            display: flex;
+            align-items: center;
+            padding: 8px;
+            transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+            cursor: move;
+        }
+        .recorder-controls {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .recorder-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.2s;
+        }
+        .recorder-btn:hover:not(:disabled) {
+            background-color: rgba(0,0,0,0.05);
+        }
+        .recorder-btn svg {
+            width: 24px;
+            height: 24px;
+            fill: #333;
+        }
+        #recordBtn.recording svg {
+            fill: var(--bad-color);
+        }
+        #recordBtn.recording {
+            animation: recordingPulse 1.2s infinite;
+        }
+        @keyframes recordingPulse { 0% { opacity: 1; } 50% { opacity: 0.7; } }
+        .recorder-btn:disabled, .overlay-text-btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+        .playback-controls {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            max-width: 0;
+            opacity: 0;
+            overflow: hidden;
+            transition: max-width 0.5s ease-in-out, opacity 0.3s ease-in-out;
+        }
+        .playback-controls.visible {
+            max-width: 500px; /* A large enough value */
+            opacity: 1;
+        }
+        .overlay-text-btn {
+            background: #e9ecef;
+            border: 1px solid var(--border-color);
+            border-radius: 25px;
+            padding: 8px 16px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+        .overlay-text-btn:hover:not(:disabled) {
+            background-color: #d1e3ff;
+            border-color: var(--primary-color);
+        }
+        .volume-controls-wrapper {
+            position: absolute;
+            top: calc(100% + 10px);
+            right: 0;
+            opacity: 0;
+            transform: translateY(-10px);
+            pointer-events: none;
+            transition: opacity 0.3s, transform 0.3s ease;
+        }
+        .volume-controls-wrapper.visible {
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: auto;
+        }
+        .volume-controls { 
+            background: var(--white-bg);
+            border-radius: 12px;
+            padding: 12px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            display: flex; 
+            gap: 1rem; 
+            align-items: center; 
+            justify-content: center; 
+        }
+        .volume-control { display: flex; align-items: center; gap: 8px; font-size: 0.9rem; color: var(--text-light); }
+        .volume-control input[type="range"] { 
+            -webkit-appearance: none; appearance: none; 
+            width: 100px; height: 6px; 
+            background: #e9ecef; 
+            border-radius: 3px; outline: none;
+            background-image: linear-gradient(var(--primary-color), var(--primary-color));
+            background-repeat: no-repeat;
+        }
+        .volume-control input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 18px; height: 18px; background: var(--primary-color); cursor: pointer; border-radius: 50%; border: 2px solid var(--white-bg); box-shadow: 0 1px 3px rgba(0,0,0,0.2);}
+        .volume-control input[type="range"]::-moz-range-thumb { width: 18px; height: 18px; background: var(--primary-color); cursor: pointer; border-radius: 50%; border: 2px solid var(--white-bg); box-shadow: 0 1px 3px rgba(0,0,0,0.2);}
+    </style>
+</head>
+<body>
+    <div class="main-container">
+        <section class="learning-section">
+            <div class="app-header">
+                <h1>楞嚴咒學習</h1>
+            </div>
+            <div id="sectionSelector"></div>
+            <div id="mantraDisplay"><p>請選擇一個會別開始學習！</p></div>
+        </section>
+    </div>
+    
+    <div class="floating-recorder" id="floatingRecorder">
+        <div class="recorder-controls">
+            <button class="recorder-btn" id="recordBtn" title="開始/停止錄音">
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 14a3 3 0 0 0 3-3V5a3 3 0 0 0-6 0v6a3 3 0 0 0 3 3zm5.4-3a5.4 5.4 0 0 1-10.8 0H5a7 7 0 0 0 6 6.93V21h2v-3.07A7 7 0 0 0 19 11h-1.6z"></path></svg>
+            </button>
+            <div class="playback-controls" id="playbackControls">
+                <button class="recorder-btn" id="playMyRecBtn" title="播放我的錄音">
+                     <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"></path></svg>
+                </button>
+                <button class="overlay-text-btn" id="playOverlayBtn" title="與範本重疊播放">與範本重疊</button>
+            </div>
+        </div>
+        <div class="volume-controls-wrapper" id="volumeControlsWrapper">
+            <div class="volume-controls">
+                <div class="volume-control"><span>範本</span><input type="range" id="templateVolume" min="0" max="1" step="0.1" value="1"></div>
+                <div class="volume-control"><span>我的</span><input type="range" id="micVolume" min="0" max="1" step="0.1" value="1"></div>
+            </div>
+        </div>
+    </div>
+    
+    <audio id="standardAudioPlayer"></audio>
+    <audio id="userAudioPlayer"></audio>
+
+    <script>
+    const fullMantraData = {
+        'verses': [
+            { lineNumber: 1, columns: ['妙湛總持不動尊'], pinyin: 'miào zhàn zǒng chí bù dòng zūn', audioSrc: 'audio/section0_line01.mp3' },
+            { lineNumber: 2, columns: ['首楞嚴王世希有'], pinyin: 'shǒu léng yán wáng shì xī yǒu', audioSrc: 'audio/section0_line02.mp3' },
+        ],
+        'assembly1': [
+            { lineNumber: 1, columns: ['南無薩怛他 蘇伽多耶 阿囉訶帝 三藐三菩陀寫'], pinyin: 'nán mó sà dàn tuō sū qié duō yē ā là hē dì sān miǎo sān pú tuó xiě', audioSrc: 'audio/section1_line1.mp3' },
+        ],
+        'assembly2': [
+            { lineNumber: 1, columns: ['<span class="c-red">烏</span>𤙖', '唎瑟揭拏', '般剌舍悉多', '<span class="c-blue">薩怛他伽都瑟尼釤</span>'], pinyin: 'wū xìn, lì shai jiē ná, bo la shē xi duo, sa dan tuō, qiē dū shai ní shān', audioSrc: 'audio/section2_line1.mp3' },
+            { lineNumber: 2, columns: ['虎𤙖', '都嚧雍', '<span class="c-red">瞻</span><span class="c-blue">婆那</span>'], pinyin: 'hǔ xìn, dū lú yōng, zhān pó nà', audioSrc: 'audio/section2_line2.mp3' },
+            { lineNumber: 3, columns: ['虎𤙖', '都嚧雍', '<span class="c-red">悉眈</span><span class="c-blue">婆那</span>'], pinyin: 'hǔ xìn, dū lú yōng, xī dān pó nà', audioSrc: 'audio/section2_line3.mp3' },
+            { lineNumber: 4, columns: ['虎𤙖', '都嚧雍', '波囉瑟地耶', '三般叉拏羯囉'], pinyin: 'hǔ xìn, dū lú yōng, bo la shai di ye, san bo cha, na jie la', audioSrc: 'audio/section2_line4.mp3'},
+            { lineNumber: 5, columns: ['虎𤙖', '都嚧雍', '<span class="c-blue">薩婆藥叉喝囉刹娑</span>', '<span class="c-green">揭囉訶</span><span class="c-blue">若闍</span>', '<span class="c-red">毗騰崩薩那羯囉</span>'], pinyin: 'hǔ xìn, dū lú yōng, sa po yao cha, he la cha suo, jiē la he ruò shé, pí téng bēng sà nà jiē là', audioSrc: 'audio/section2_line5.mp3' },
+            { lineNumber: 6, columns: ['虎𤙖', '都嚧雍', '<span class="c-blue">者都囉尸底南</span>', '<span class="c-green">揭囉訶</span><span class="c-red">娑訶薩囉南</span>', '<span class="c-red">毗騰崩薩那囉</span>'], pinyin: 'hǔ xìn, dū lú yōng, zhě dū là, shī dǐ nán, jiē la hē, suō hē sà la nán, pí téng bēng sà nà la', audioSrc: 'audio/section2_line6.mp3' },
+            { lineNumber: 7, columns: ['虎𤙖', '都嚧雍', '<span class="c-red">囉叉</span>', '婆伽梵', '<span class="c-blue">薩怛他伽都瑟尼釤</span>', '<span class="c-red">波囉點闍吉唎</span>', '<span class="c-red">摩訶娑訶薩囉</span>'], pinyin: 'hǔ xìn, dū lú yōng, là chā, pó qié fàn, sa dan tuō, qiē dū shai ní shān, bō là diǎn, shé jí lì, mó hē suō hē sà la', audioSrc: 'audio/section2_line7.mp3' },
+            { lineNumber: 8, columns: ['', '', '<span class="c-blue">勃樹娑訶薩囉室咧沙</span>', '<span class="c-red">俱知娑訶薩泥帝㘑</span>', '<span class="c-blue">阿弊提視婆唎多</span>', '<span class="c-red">吒吒甖迦</span>'], pinyin: 'bó shù suō hē sà la, shì lì shā, jù zhī suō hē sà ní, dì lì e bí tí shì pó, lì duō, zhà zhà yīng jiā', audioSrc: 'audio/section2_line8.mp3' },
+            { lineNumber: 9, columns: ['', '', '<span class="c-red">摩訶跋闍嚧陀囉</span>', '<span class="c-blue">帝唎菩婆那</span>', '<span class="c-red">曼茶囉</span>'], pinyin: 'mó hē bá shé lú tuó là, dì lì pú pó nà, màn chá la', audioSrc: 'audio/section2_line9.mp3' },
+            { lineNumber: 10, columns: ['<span class="c-red">烏</span>𤙖', '莎悉帝薄婆都', '<span class="c-red">麽麽</span>', '<span class="c-red">印菟那麼麼寫</span>'], pinyin: 'wū xìn, suō xī dì, bó pó dū, mó mó, yìn tù nà mó mó xiě', audioSrc: 'audio/section2_line10.mp3' }
+        ],
+    };
+    const sectionMap = {
+        'verses': { name: '偈頌' },
+        'assembly1': { name: '第一會' },
+        'assembly2': { name: '第二會' },
+        'assembly3': { name: '第三會' },
+        'assembly4': { name: '第四會' },
+        'assembly5': { name: '第五會' },
+    };
+    
+    class LengyanApp {
+        constructor() {
+            this.gameState = {
+                currentAssemblyId: 'assembly2', 
+                currentLineIndex: null,
+                lastSelectedAudioSrc: null,
+                isRecording: false,
+                mediaRecorder: null,
+                userAudioBlob: null,
+                dragState: { isDragging: false, startX: 0, startY: 0, initialLeft: 0, initialTop: 0 },
+            };
+            this.elements = {
+                sectionSelector: document.getElementById('sectionSelector'),
+                mantraDisplay: document.getElementById('mantraDisplay'),
+                floatingRecorder: document.getElementById('floatingRecorder'),
+                recordBtn: document.getElementById('recordBtn'),
+                playbackControls: document.getElementById('playbackControls'),
+                playMyRecBtn: document.getElementById('playMyRecBtn'),
+                playOverlayBtn: document.getElementById('playOverlayBtn'),
+                volumeControlsWrapper: document.getElementById('volumeControlsWrapper'),
+                templateVolume: document.getElementById('templateVolume'),
+                micVolume: document.getElementById('micVolume'),
+                standardAudioPlayer: document.getElementById('standardAudioPlayer'),
+                userAudioPlayer: document.getElementById('userAudioPlayer'),
+            };
+        }
+
+        init() {
+            this.renderSectionSelector();
+            this.loadAssembly(this.gameState.currentAssemblyId);
+            this.setupEventListeners();
+            this.loadVolumeSettings();
+        }
+        
+        setupEventListeners() {
+            this.elements.sectionSelector.addEventListener("click", this.handleSectionClick.bind(this));
+            this.elements.mantraDisplay.addEventListener("click", this.handleMantraDisplayClick.bind(this));
+            this.elements.recordBtn.addEventListener('click', this.toggleGlobalRecording.bind(this));
+            this.elements.playMyRecBtn.addEventListener('click', this.playUserRecording.bind(this));
+            this.elements.playOverlayBtn.addEventListener('click', this.playOverlay.bind(this));
+            this.elements.templateVolume.addEventListener('input', e => this.updateVolumeSliderStyle(e.target));
+            this.elements.micVolume.addEventListener('input', e => this.updateVolumeSliderStyle(e.target));
+            
+            // Drag and Drop Listeners
+            this.elements.floatingRecorder.addEventListener('mousedown', this.onDragStart.bind(this));
+            document.addEventListener('mousemove', this.onDrag.bind(this));
+            document.addEventListener('mouseup', this.onDragEnd.bind(this));
+            this.elements.floatingRecorder.addEventListener('touchstart', this.onDragStart.bind(this), { passive: false });
+            document.addEventListener('touchmove', this.onDrag.bind(this), { passive: false });
+            document.addEventListener('touchend', this.onDragEnd.bind(this));
+        }
+
+        handleSectionClick(e) { const sectionBtn = e.target.closest(".section-btn"); if (sectionBtn) this.loadAssembly(sectionBtn.dataset.id); }
+        handleMantraDisplayClick(e) { const sentenceEl = e.target.closest("tr, .mantra-sentence-grid"); if (sentenceEl) this.handleMantraClick(parseInt(sentenceEl.dataset.index)); }
+        
+        loadAssembly(assemblyId) { this.gameState.currentAssemblyId = assemblyId; this.gameState.currentLineIndex = null; this.renderMantraView(); this.elements.sectionSelector.querySelectorAll('.section-btn').forEach(btn => { btn.classList.toggle('active', btn.dataset.id === assemblyId); }); }
+        renderMantraView() { const { currentAssemblyId, currentLineIndex } = this.gameState; const data = fullMantraData[currentAssemblyId]; if (!data || data.length === 0) { this.elements.mantraDisplay.innerHTML = `<p style="text-align:center; padding: 2rem;">此會別內容尚未建立。</p>`; return; }; if (currentAssemblyId === 'assembly2') { this.renderMantraAsTable(data, currentLineIndex); } else { this.renderMantraAsGrid(data, currentLineIndex); } }
+        renderSectionSelector() { this.elements.sectionSelector.innerHTML = Object.entries(sectionMap) .map(([id, {name}]) => `<button class="section-btn ${id === this.gameState.currentAssemblyId ? 'active' : ''}" data-id="${id}">${name}</button>`) .join(''); }
+        renderMantraAsTable(data, selectedIndex) { this.elements.mantraDisplay.className = 'table-layout-container'; let rowHtml = data.map((item, index) => { const cellsHTML = item.columns.map(chunk => `<td>${chunk || ''}</td>`).join(''); return `<tr class="${index === selectedIndex ? 'selected' : ''}" data-index="${index}"> <td class="line-number">${item.lineNumber}</td> ${cellsHTML} </tr>`; }).join(''); this.elements.mantraDisplay.innerHTML = ` <div class="brace-wrapper"> <div id="brace-long" class="brace"></div> <div id="brace-short" class="brace"></div> </div> <div class="table-rows-wrapper"> <table class="mantra-table"><tbody>${rowHtml}</tbody></table> </div>`; requestAnimationFrame(() => this.updateBracePositions()); }
+        renderMantraAsGrid(data, selectedIndex) { this.elements.mantraDisplay.className = 'mantra-display-grid'; this.elements.mantraDisplay.innerHTML = data.map((item, index) => `<div class="mantra-sentence-grid ${index === selectedIndex ? 'selected' : ''}" data-index="${index}">${item.columns.join(' ')}</div>` ).join(''); }
+        updateBracePositions() { if (this.gameState.currentAssemblyId !== 'assembly2') return; const container = this.elements.mantraDisplay; const braceLong = container.querySelector('#brace-long'); const braceShort = container.querySelector('#brace-short'); const rows = container.querySelectorAll('.mantra-table tr'); if (rows.length < 10 || !braceLong || !braceShort) return; const [row1, row2, , , , , row7, , , row10] = rows; const top1 = row1.offsetTop + row1.offsetHeight * 0.2; const bottom10 = row10.offsetTop + row10.offsetHeight * 0.8; braceLong.style.top = `${top1}px`; braceLong.style.height = `${bottom10 - top1}px`; const top2 = row2.offsetTop + row2.offsetHeight * 0.2; const bottom7 = row7.offsetTop + row7.offsetHeight * 0.8; braceShort.style.top = `${top2}px`; braceShort.style.height = `${bottom7 - top2}px`; }
+        
+        loadVolumeSettings() {
+            const templateVol = localStorage.getItem('templateVolume') || 1;
+            const micVol = localStorage.getItem('micVolume') || 1;
+            this.elements.templateVolume.value = templateVol;
+            this.elements.micVolume.value = micVol;
+            this.updateVolumeSliderStyle(this.elements.templateVolume);
+            this.updateVolumeSliderStyle(this.elements.micVolume);
+        }
+        
+        updateVolumeSliderStyle(slider) {
+            const value = (slider.value - slider.min) / (slider.max - slider.min) * 100;
+            slider.style.backgroundSize = `${value}% 100%`;
+            if (slider.id === 'templateVolume') {
+                 localStorage.setItem('templateVolume', slider.value);
+                 this.elements.standardAudioPlayer.volume = slider.value;
+            } else if (slider.id === 'micVolume') {
+                 localStorage.setItem('micVolume', slider.value);
+                 this.elements.userAudioPlayer.volume = slider.value;
+            }
+        }
+
+        async handleMantraClick(index) {
+            this.gameState.currentLineIndex = index;
+            this.renderMantraView();
+            
+            const currentData = fullMantraData[this.gameState.currentAssemblyId]?.[index];
+            if (!currentData || !currentData.audioSrc) return;
+            
+            this.gameState.lastSelectedAudioSrc = currentData.audioSrc;
+            this.elements.playOverlayBtn.disabled = !this.gameState.userAudioBlob;
+
+
+            try {
+                this.elements.standardAudioPlayer.src = currentData.audioSrc;
+                this.elements.standardAudioPlayer.play();
+            } catch(e) {
+                console.error("音檔播放錯誤:", e);
+                alert(`無法播放音檔: ${currentData.audioSrc}`);
+            }
+        }
+
+        toggleGlobalRecording() {
+            if (this.gameState.isRecording) {
+                this.stopGlobalRecording();
+            } else {
+                this.startGlobalRecording();
+            }
+        }
+
+        async startGlobalRecording() {
+            this.gameState.isRecording = true;
+            this.elements.recordBtn.classList.add('recording');
+            this.elements.playbackControls.classList.remove('visible');
+            this.elements.volumeControlsWrapper.classList.remove('visible');
+
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                this.gameState.stream = stream;
+                
+                const recorder = new MediaRecorder(stream);
+                this.gameState.mediaRecorder = recorder;
+                let audioChunks = [];
+                recorder.ondataavailable = event => audioChunks.push(event.data);
+                recorder.onstop = () => {
+                    this.gameState.userAudioBlob = new Blob(audioChunks, { type: "audio/webm" });
+                    this.elements.playbackControls.classList.add('visible');
+                };
+                recorder.start();
+            } catch (error) {
+                alert("無法啟動麥克風，請檢查權限設定。");
+                this.stopGlobalRecording();
+            }
+        }
+
+        stopGlobalRecording() {
+            if (!this.gameState.isRecording) return;
+            if (this.gameState.mediaRecorder && this.gameState.mediaRecorder.state === "recording") {
+                this.gameState.mediaRecorder.stop();
+            }
+            if (this.gameState.stream) {
+                this.gameState.stream.getTracks().forEach(track => track.stop());
+            }
+            this.gameState.isRecording = false;
+            this.elements.recordBtn.classList.remove('recording');
+        }
+
+        playUserRecording() {
+            if (this.gameState.userAudioBlob) {
+                const audioUrl = URL.createObjectURL(this.gameState.userAudioBlob);
+                this.elements.userAudioPlayer.src = audioUrl;
+                this.elements.userAudioPlayer.play();
+            }
+        }
+
+        playOverlay() {
+            if (!this.gameState.userAudioBlob || !this.gameState.lastSelectedAudioSrc) return;
+            
+            this.elements.volumeControlsWrapper.classList.toggle('visible');
+
+            const userAudioUrl = URL.createObjectURL(this.gameState.userAudioBlob);
+            this.elements.userAudioPlayer.src = userAudioUrl;
+            this.elements.standardAudioPlayer.src = this.gameState.lastSelectedAudioSrc;
+
+            this.elements.userAudioPlayer.play();
+            this.elements.standardAudioPlayer.play();
+        }
+
+        onDragStart(e) {
+            if (e.target.closest('button, input')) return;
+            this.gameState.dragState.isDragging = true;
+            const event = e.touches ? e.touches[0] : e;
+            this.gameState.dragState.startX = event.clientX;
+            this.gameState.dragState.startY = event.clientY;
+            this.gameState.dragState.initialLeft = this.elements.floatingRecorder.offsetLeft;
+            this.gameState.dragState.initialTop = this.elements.floatingRecorder.offsetTop;
+            this.elements.floatingRecorder.style.transition = 'none'; // Disable transition during drag
+        }
+
+        onDrag(e) {
+            if (!this.gameState.dragState.isDragging) return;
+            e.preventDefault();
+            const event = e.touches ? e.touches[0] : e;
+            const dx = event.clientX - this.gameState.dragState.startX;
+            const dy = event.clientY - this.gameState.dragState.startY;
+            this.elements.floatingRecorder.style.left = `${this.gameState.dragState.initialLeft + dx}px`;
+            this.elements.floatingRecorder.style.top = `${this.gameState.dragState.initialTop + dy}px`;
+        }
+
+        onDragEnd() {
+            this.gameState.dragState.isDragging = false;
+            this.elements.floatingRecorder.style.transition = 'all 0.4s cubic-bezier(0.25, 1, 0.5, 1)'; // Re-enable transition
+        }
+    }
+
+    const app = new LengyanApp();
+    window.addEventListener('load', () => app.init());
+    </script>
+</body>
+</html>
