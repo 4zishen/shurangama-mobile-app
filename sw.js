@@ -6,8 +6,8 @@
 const CACHE_NAME = 'shurangama-mobile-v5';
 const ASSETS_TO_CACHE = [
     './mobile-app.html',
-    './mobile-app.css',
-    './mobile-app.js',
+    './mobile-app.css?v=5',
+    './mobile-app.js?v=5',
     './mantra-data.js',
     './avatars/mobile/1praying_monk.png',
     './avatars/mobile/meditating.png',
