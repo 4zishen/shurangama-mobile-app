@@ -1533,20 +1533,25 @@ body {
 
 .chase-character {
     position: absolute;
-    bottom: 8px;
-    width: 40px;
-    height: 40px;
+    bottom: 10px;
+    width: 60px;
+    height: 60px;
     border-radius: 50%;
     object-fit: cover;
     transition: left 0.5s var(--ease-out);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
 }
 
 .chase-player {
     left: 10%;
+    border: 2.5px solid var(--primary);
+    background-color: white;
 }
 
 .chase-enemy {
     left: 80%;
+    border: 2.5px solid var(--danger);
+    background-color: white;
 }
 
 .chase-error-count {
