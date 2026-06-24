@@ -612,14 +612,16 @@ class UserProfileSystem {
         // 檢查當前頁面 - 以下頁面不顯示歡迎彈窗：
         // 1. RPG 故事頁面 - 該頁面本身就有法號輸入功能
         // 2. 修行道場頁面 - 入口頁面會處理法號輸入
+        // 3. 手機版 App 頁面 - 使用 onboarding 進行輸入
         // 修正在瀏覽器位址列中中文可能被 URL 編碼的問題
         const currentPath = decodeURIComponent(window.location.pathname);
         const isRpgStoryPage = currentPath.includes('rpg-story');
         const isDashboardPage = currentPath.includes('修行道場');
+        const isMobileAppPage = currentPath.includes('mobile-app');
 
         const isIndexPage = currentPath.includes('index.html') || currentPath.endsWith('/') || currentPath.endsWith('\\');
 
-        if (!isRpgStoryPage && !isDashboardPage && !isIndexPage) {
+        if (!isRpgStoryPage && !isDashboardPage && !isIndexPage && !isMobileAppPage) {
             // 頁面載入完成後顯示歡迎彈窗
             if (document.readyState === 'loading') {
                 document.addEventListener('DOMContentLoaded', () => {

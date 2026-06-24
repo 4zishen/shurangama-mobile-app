@@ -195,8 +195,11 @@
                 </div>
             </div>
 
-            <!-- 錄音浮動按鈕 -->
-            <button class="mobile-recorder-fab" id="recorderFab" onclick="MobileApp.toggleRecorder()" title="錄音">🎙️</button>
+            <!-- 錄音與播放浮動按鈕 -->
+            <div class="mobile-recorder-container" id="recorderContainer">
+                <button class="play-my-audio-btn" id="playMyAudioBtn" onclick="MobileApp.playMyAudio()" style="display:none;" title="播放我的錄音">▶️</button>
+                <button class="mobile-recorder-fab" id="recorderFab" onclick="MobileApp.toggleRecorder()" title="錄音">🎙️</button>
+            </div>
         </div>
 
         <!-- ========== 記憶挑戰頁 ========== -->
@@ -612,7 +615,7 @@
     .global-nav { display: none !important; }
     body { padding-top: 0 !important; }
     /* user-profile-system.js 的歡迎彈窗 — 手機版用 onboarding 取代 */
-    .user-welcome-modal-overlay { display: none !important; }
+    .user-welcome-modal, .user-welcome-modal-overlay { display: none !important; }
     /* progressive-learning-ui.js 注入的桌面 UI */
     .progressive-mode-toggle, .progressive-stats-bar { display: none !important; }
 </style>

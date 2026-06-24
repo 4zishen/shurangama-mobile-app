@@ -39,7 +39,8 @@ const MobileApp = (() => {
         isRecording: false,
         mediaRecorder: null,
         audioChunks: [],
-        recordedBlob: null
+        recordedBlob: null,
+        isPlayingMyAudio: false
     };
 
     // ═══════════════════════════════════════════════════════════
@@ -704,7 +705,24 @@ const MobileApp = (() => {
 
     function playAudio(src) {
         if (!src) return;
+        
+        // 如果正在播放個人錄音，先停止
+        if (state.isPlayingMyAudio) {
+            state.isPlayingMyAudio = false;
+            const playBtn = document.getElementById('playMyAudioBtn');
+            if (playBtn) {
+                playBtn.textContent = '▶️';
+                playBtn.classList.remove('playing');
+            }
+        }
+        
+        // 修正 section0_line1 到 section0_line9 -> section0_line01 到 section0_line09 的對應關係
+        src = src.replace(/section0_line([1-9])\.mp3/, 'section0_line0$1.mp3');
+        // 修正 section3_line1 到 section3_line9 -> section3_line01 到 section3_line09 的對應關係
+        src = src.replace(/section3_line([1-9])\.mp3/, 'section3_line0$1.mp3');
+        
         const player = document.getElementById('audioPlayer');
+        player.onended = null;
         player.src = src;
         player.play().catch(() => {});
     }
@@ -1155,6 +1173,18 @@ const MobileApp = (() => {
 
     async function startRecording() {
         try {
+            // 停止播放中的音訊
+            const player = document.getElementById('audioPlayer');
+            player.pause();
+            if (state.isPlayingMyAudio) {
+                state.isPlayingMyAudio = false;
+                const playBtn = document.getElementById('playMyAudioBtn');
+                if (playBtn) {
+                    playBtn.textContent = '▶️';
+                    playBtn.classList.remove('playing');
+                }
+            }
+            
             const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
             state.mediaRecorder = new MediaRecorder(stream);
             state.audioChunks = [];
@@ -1163,13 +1193,24 @@ const MobileApp = (() => {
             state.mediaRecorder.onstop = () => {
                 state.recordedBlob = new Blob(state.audioChunks, { type: 'audio/webm' });
                 stream.getTracks().forEach(t => t.stop());
-                showToast('🎙️', '錄音完成', '點擊播放按鈕聽取', 'success');
+                showToast('🎙️', '錄音完成', '點擊 ▶️ 按鈕聽取您的聲音', 'success');
+                
+                // 顯示播放按鈕
+                const playBtn = document.getElementById('playMyAudioBtn');
+                if (playBtn) {
+                    playBtn.style.display = 'flex';
+                    playBtn.textContent = '▶️';
+                }
             };
 
             state.mediaRecorder.start();
             state.isRecording = true;
             document.getElementById('recorderFab').classList.add('recording');
             document.getElementById('recorderFab').textContent = '⏹️';
+            
+            // 錄音中隱藏播放按鈕
+            const playBtn = document.getElementById('playMyAudioBtn');
+            if (playBtn) playBtn.style.display = 'none';
         } catch (e) {
             showToast('❌', '錄音失敗', '請允許麥克風權限', 'error');
         }
@@ -1181,6 +1222,38 @@ const MobileApp = (() => {
             state.isRecording = false;
             document.getElementById('recorderFab').classList.remove('recording');
             document.getElementById('recorderFab').textContent = '🎙️';
+        }
+    }
+
+    function playMyAudio() {
+        if (!state.recordedBlob) return;
+        const player = document.getElementById('audioPlayer');
+        const playBtn = document.getElementById('playMyAudioBtn');
+        
+        if (state.isPlayingMyAudio) {
+            player.pause();
+            state.isPlayingMyAudio = false;
+            if (playBtn) {
+                playBtn.textContent = '▶️';
+                playBtn.classList.remove('playing');
+            }
+        } else {
+            const audioUrl = URL.createObjectURL(state.recordedBlob);
+            player.src = audioUrl;
+            player.play().catch(() => {});
+            state.isPlayingMyAudio = true;
+            if (playBtn) {
+                playBtn.textContent = '⏸️';
+                playBtn.classList.add('playing');
+            }
+            
+            player.onended = () => {
+                state.isPlayingMyAudio = false;
+                if (playBtn) {
+                    playBtn.textContent = '▶️';
+                    playBtn.classList.remove('playing');
+                }
+            };
         }
     }
 
@@ -1235,6 +1308,7 @@ const MobileApp = (() => {
         changePage,
         togglePinyin,
         playAudio,
+        playMyAudio,
         placePuzzlePiece,
         nextPuzzle,
         answerQuiz,
